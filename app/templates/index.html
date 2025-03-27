@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economic Dashboard | Bryce Kratzer</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- D3.js for advanced visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Economic Pulse</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="#methodology"><i class="fas fa-chart-line"></i> Methodology</a></li>
+                    <li><a href="https://github.com/yourusername/project-repo"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Info Banner -->
+    <section class="dashboard-info">
+        <div class="container">
+            <div class="update-info">
+                <p><i class="fas fa-sync"></i> Last Updated: <span id="last-updated">Loading...</span></p>
+                <p><i class="fas fa-calendar"></i> Market Date: <span id="market-date">Loading...</span></p>
+            </div>
+            <div class="market-status">
+                <p id="market-status">Market Status: <span>Loading...</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Dashboard Grid -->
+    <main class="dashboard">
+        <div class="container">
+            <!-- Panel 1: Market Momentum -->
+            <section class="panel" id="market-momentum">
+                <div class="panel-header">
+                    <h2><i class="fas fa-chart-line"></i> Market Momentum</h2>
+                    <div class="panel-controls">
+                        <button class="info-btn" data-panel="market-momentum"><i class="fas fa-info-circle"></i></button>
+                        <button class="expand-btn" data-panel="market-momentum"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-container">
+                        <canvas id="momentum-chart"></canvas>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>50-Day MA</h3>
+                            <p class="value" id="ma-value">Loading...</p>
+                            <p class="change" id="ma-change">0%</p>
+                        </div>
+                        <div class="metric">
+                            <h3>RSI</h3>
+                            <p class="value" id="rsi-value">Loading...</p>
+                            <p class="status" id="rsi-status">Neutral</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel 2: Housing Market -->
+            <section class="panel" id="housing-market">
+                <div class="panel-header">
+                    <h2><i class="fas fa-home"></i> Housing Market</h2>
+                    <div class="panel-controls">
+                        <button class="info-btn" data-panel="housing-market"><i class="fas fa-info-circle"></i></button>
+                        <button class="expand-btn" data-panel="housing-market"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-container">
+                        <canvas id="housing-chart"></canvas>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>Case-Shiller Index</h3>
+                            <p class="value" id="case-shiller-value">Loading...</p>
+                            <p class="change" id="case-shiller-change">0%</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Mortgage Rate</h3>
+                            <p class="value" id="mortgage-rate-value">Loading...</p>
+                            <p class="change" id="mortgage-rate-change">0%</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel 3: Consumer Health -->
+            <section class="panel" id="consumer-health">
+                <div class="panel-header">
+                    <h2><i class="fas fa-users"></i> Consumer Health</h2>
+                    <div class="panel-controls">
+                        <button class="info-btn" data-panel="consumer-health"><i class="fas fa-info-circle"></i></button>
+                        <button class="expand-btn" data-panel="consumer-health"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-container">
+                        <canvas id="consumer-chart"></canvas>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>Consumer Sentiment</h3>
+                            <p class="value" id="sentiment-value">Loading...</p>
+                            <p class="change" id="sentiment-change">0%</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Unemployment</h3>
+                            <p class="value" id="unemployment-value">Loading...</p>
+                            <p class="change" id="unemployment-change">0%</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel 4: Recent Market Performance -->
+            <section class="panel" id="market-performance">
+                <div class="panel-header">
+                    <h2><i class="fas fa-university"></i> Market Performance</h2>
+                    <div class="panel-controls">
+                        <button class="info-btn" data-panel="market-performance"><i class="fas fa-info-circle"></i></button>
+                        <button class="expand-btn" data-panel="market-performance"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-index="sp500">S&P 500</button>
+                        <button class="tab-btn" data-index="dow">Dow Jones</button>
+                        <button class="tab-btn" data-index="nasdaq">NASDAQ</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="market-chart"></canvas>
+                    </div>
+                    <div class="market-summary">
+                        <div class="summary-item">
+                            <h3>Open</h3>
+                            <p id="market-open">Loading...</p>
+                        </div>
+                        <div class="summary-item">
+                            <h3>High</h3>
+                            <p id="market-high">Loading...</p>
+                        </div>
+                        <div class="summary-item">
+                            <h3>Low</h3>
+                            <p id="market-low">Loading...</p>
+                        </div>
+                        <div class="summary-item">
+                            <h3>Close</h3>
+                            <p id="market-close">Loading...</p>
+                        </div>
+                        <div class="summary-item">
+                            <h3>Volume</h3>
+                            <p id="market-volume">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Panel Information Modals -->
+    <div class="modal" id="panel-info-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Panel Information</h2>
+            <div id="modal-body">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About This Dashboard</h2>
+            <p>This economic dashboard provides a real-time overview of key economic indicators. Data is updated daily and sourced from FRED and financial APIs.</p>
+            <h3>Technologies Used</h3>
+            <ul>
+                <li>Python (Data Processing)</li>
+                <li>Flask (API Backend)</li>
+                <li>Chart.js & D3.js (Visualizations)</li>
+                <li>GitHub Actions (Automated Updates)</li>
+            </ul>
+            <h3>About the Creator</h3>
+            <p>Created by Bryce Kratzer. Connect with me:</p>
+            <div class="social-links">
+                <a href="https://github.com/yourusername"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://linkedin.com/in/yourusername"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="mailto:your.email@example.com"><i class="fas fa-envelope"></i> Email</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section id="methodology" class="methodology-section">
+        <div class="container">
+            <h2>Methodology</h2>
+            <p>Learn about how the data is sourced, processed, and what each indicator means.</p>
+            
+            <div class="methodology-item">
+                <h3>Market Momentum</h3>
+                <p>The Market Momentum panel uses 50-day moving averages and RSI calculations to determine market trends.</p>
+                <ul>
+                    <li><strong>50-Day MA:</strong> Average closing price over the last 50 trading days</li>
+                    <li><strong>RSI:</strong> Relative Strength Index, measuring overbought/oversold conditions</li>
+                </ul>
+            </div>
+            
+            <div class="methodology-item">
+                <h3>Housing Market</h3>
+                <p>Housing market health is tracked using the Case-Shiller Home Price Index and current mortgage rates.</p>
+                <ul>
+                    <li><strong>Case-Shiller:</strong> Tracks changes in residential real estate prices</li>
+                    <li><strong>Mortgage Rates:</strong> 30-year fixed-rate mortgage average</li>
+                </ul>
+            </div>
+
+            <div class="methodology-item">
+                <h3>Consumer Health</h3>
+                <p>Consumer financial well-being is measured through sentiment indices and unemployment data.</p>
+                <ul>
+                    <li><strong>Consumer Sentiment:</strong> University of Michigan Consumer Sentiment Index</li>
+                    <li><strong>Unemployment:</strong> U.S. unemployment rate from the Bureau of Labor Statistics</li>
+                </ul>
+            </div>
+
+            <div class="methodology-item">
+                <h3>Data Sources</h3>
+                <p>Data is sourced from:</p>
+                <ul>
+                    <li>Federal Reserve Economic Data (FRED)</li>
+                    <li>Yahoo Finance API</li>
+                    <li>U.S. Bureau of Labor Statistics</li>
+                    <li>U.S. Bureau of Economic Analysis</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="current-year">2025</span> Bryce Kratzer. All data is provided for informational purposes only.</p>
+            <p>Data sources: FRED, Yahoo Finance, BLS, BEA</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="js/data-loader.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
