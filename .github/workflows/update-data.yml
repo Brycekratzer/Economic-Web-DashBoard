@@ -1,0 +1,78 @@
+name: Update Financial Data
+
+on:
+  schedule:
+    # Runs every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  process-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history so we can push changes
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Cache Python dependencies
+        id: pip-cache
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-pip-packages
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      
+      # Diagnostic step that only runs if cache misses
+      - if: ${{ steps.pip-cache.outputs.cache-hit != 'true' }}
+        name: List environment before install
+        continue-on-error: true
+        run: |
+          python --version
+          pip --version
+          pip list
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      # Optional: Verify installation was successful
+      - name: Verify installation
+        run: |
+          python -c "import yfinance; import pandas; import pandas_ta; print('Libraries successfully imported!')"
+      
+      - name: Run data update script
+        run: python scripts/update_data.py
+      
+      # Diagnostic step to see what changed
+      - name: Show changes
+        run: git status
+      
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+          git add data/
+          # Only commit if there are changes
+          git diff --quiet && git diff --staged --quiet || (
+            git commit -m "Update financial data $(date +'%Y-%m-%d %H:%M:%S')"
+            git push
+          )
+      
+      # Optional: Add success notification
+      - name: Job status
+        if: ${{ success() }}
+        run: echo "Data update completed successfully!"
+                

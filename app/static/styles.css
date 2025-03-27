@@ -16,6 +16,8 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--white);
+    
+    
 }
 
 .container {
@@ -23,6 +25,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    text-align: center;
 }
 
 h1, h2, h3 {
