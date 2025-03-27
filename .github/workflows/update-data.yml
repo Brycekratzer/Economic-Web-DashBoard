@@ -48,11 +48,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
-      # Optional: Verify installation was successful
-      - name: Verify installation
-        run: |
-          python -c "import yfinance; import pandas; import pandas_ta; print('Libraries successfully imported!')"
-      
       - name: Run data update script
         run: python scripts/update_data.py
       
