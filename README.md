@@ -11,7 +11,7 @@ overall economic state of the United States using FRED and yfinance data
 │       ├── static.yml         # For pushing updates
 │       └── update-data.yml    # Data processing workflow & Dependency's
 ├── app/
-│   ├── app.js
+│   ├── display.js
 │   └── styles.css
 │       
 ├── scripts/                   
@@ -29,15 +29,14 @@ overall economic state of the United States using FRED and yfinance data
 
 Updated diretory paths for smooth git action updates. Working on accessing `.csv` files from data directory in the app.js file. Made a simple pipeline structure for data preprocessing in `scripts/update_data.py`
 
-**Further Implementation**
+Implemented the `display.js` file that was responsible for updating and adding graphs to the front end by using `D3`. Still need to modify the CSS file to edit how it looks and also include new files from FRED data via `pandas_ta`in the `update_data.py`
 
-The graph being displayed is a rough draft of what is to come. The main idea was to get the `d3` js library to integrate with the csv files. Still need to work on the visuals for the graph.
-
-
+Also updated the `update-data.yml` file to only run at 5:30 PM MST every week day to help preserve github's free resources. 
 
 ### March 27th 2025
 
 Added a new github action that add's dependency's for preprocessing data from yfinance and and FRED data.
+
 This action adds a cache that has dependency's installed and if a new package is added everything is reinstalled. This helps with time management for deployment.
 
 Also made it so we run the `update_data.py` file located in the `/scripts` directory every 6 hours. In theory, every 6 hours this script will run preprocessing a new set of data from yfinance and FRED then export into a csv file into the `/data` directory.

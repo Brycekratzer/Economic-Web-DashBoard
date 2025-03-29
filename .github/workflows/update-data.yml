@@ -2,8 +2,8 @@ name: Update Financial Data
 
 on:
   schedule:
-    # Runs every 6 hours
-    - cron: '0 */6 * * *'
+    # Runs at 5:30 PM MST every week day
+    - cron: '30 12 * * 1-5'
   workflow_dispatch:  # Allows manual triggering
 
 jobs:

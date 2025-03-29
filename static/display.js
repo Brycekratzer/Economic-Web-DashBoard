@@ -11,7 +11,7 @@
 /**
  * Creating "graph frame" constants for setting up layout
  */
-const zoomSize = 3;
+const zoomSize = 2;
 
 // Margin is our "inner frame"
 const margin = { 
@@ -116,7 +116,7 @@ function createViz(svg, data, config){
         .attr("text-anchor", "middle")
         // Calculations for position of name
         .attr("x", width/2)
-        .attr("y", height + margin.bottom - 40)
+        .attr("y", height + margin.bottom - 20)
         .text("Date");
     
     svg.append("text")
@@ -127,7 +127,7 @@ function createViz(svg, data, config){
         .attr("transform", "rotate(-90)")
 
         // Position of text
-        .attr("y", -margin.left + 70)
+        .attr("y", -margin.left + 30)
         .attr("x", -(height/2))
         .text(config.yAxisLabel);
 
@@ -139,7 +139,7 @@ function createViz(svg, data, config){
     svg.append("path")
         .datum(data)
         .attr("d", lineGraph)
-        .attr("stroke", config.color)
+        // .attr("stroke", config.color)
         .attr("stroke-width", 2);
 }
 

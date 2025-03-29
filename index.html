@@ -6,7 +6,9 @@
     <title>Economic Dashboard | Bryce Kratzer</title>
     <link rel="stylesheet" href="./static/styles.css">
     <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- D3.js for advanced visualizations -->
@@ -15,24 +17,26 @@
 <body>
 
     <!-- Header with navigation -->
-    <div class="header-panel">
-        <header>
-            <div class="container">
-                <h1>Economic Dashboard</h1>
-            </div>
-        </header>
-    </div>
+    <header>
+        <h1>Economic Dashboard</h1>
+    </header>
     
     <!--  Dashboard section -->
     <main class="container">        
         <section class="dashboard-panel">
-            <h2>Data Visualization</h2>
+            <h2>Stock Market Momentum</h2>
 
             <!-- D3.js visualization -->
-            <div id="graph-container">
-                <div id="graph-category">
-                    <div id="viz1"></div>
-                    <div id="viz2"></div>
+            <div class="graph-container">
+                <div id="viz1"> 
+                    <div class="viz-header">
+                        S&P 500 120 Day Momentum
+                    </div>
+                </div>
+                <div id="viz2">
+                    <div class="viz-header">
+                        S&P 500 50 Day Momentum
+                    </div>
                 </div>
             </div>
         </section>
