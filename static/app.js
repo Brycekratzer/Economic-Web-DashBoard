@@ -4,7 +4,7 @@ const svg = d3.select("#viz")
   .attr("width", 600)
   .attr("height", 400);
 
-d3.csv("/data/120_day.csv")
+d3.csv("./data/120_day.csv")
   .then(function(data) {
     
     // Updating the type for the CSV file
