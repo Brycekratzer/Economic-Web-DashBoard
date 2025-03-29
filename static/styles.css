@@ -32,3 +32,12 @@ h1, h2, h3 {
     margin-bottom: 20px;
     color: var(--secondary-color);
 }
+
+.viz{
+    border: 1px solid #ccc;
+    min-height: 400px;
+}
+
+path {
+    stroke-linejoin: round;
+}

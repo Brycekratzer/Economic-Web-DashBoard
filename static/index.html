@@ -15,33 +15,27 @@
 <body>
 
     <!-- Header with navigation -->
-    <header>
-        <div class="container">
-            <h1>Economic Dashboard</h1>
-        </div>
-    </header>
+    <div class="header-panel">
+        <header>
+            <div class="container">
+                <h1>Economic Dashboard</h1>
+            </div>
+        </header>
+    </div>
     
     <!--  Dashboard section -->
-    <main class="container">
-        <section class="dashboard-panel">
-            <h2>Economic Indicators</h2>
-            <!-- Chart.js chart -->
-            <canvas id="economicChart"></canvas>
-        </section>
-        
+    <main class="container">        
         <section class="dashboard-panel">
             <h2>Data Visualization</h2>
+            <p> stock data </p>
             <!-- D3.js visualization -->
-            <div id="d3Visualization"></div>
+            <div id="viz"></div>
         </section>
     </main>
     
     <footer>
         <p>&copy; 2025 Bryce Kratzer</p>
     </footer>
-    
-    <!-- JavaScript file -->
-    <script src="js/dashboard.js"></script>
-
+    <script src="app.js"></script>
 </body>
 </html>

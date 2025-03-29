@@ -11,12 +11,9 @@ overall economic state of the United States using FRED and yfinance data
 │       ├── static.yml         # For pushing updates
 │       └── update-data.yml    # Data processing workflow & Dependency's
 ├── app/
-│   └── static/
-│       ├── app.js
-│       └── styles.css
-│    
-├── templates/   
-│   └── index.html   
+│   ├── app.js
+│   ├── index.html
+│   └── styles.css
 │       
 ├── scripts/                   
 │   └── update_data.py         # Python script to process financial data
@@ -26,6 +23,16 @@ overall economic state of the United States using FRED and yfinance data
 ```
 
 ## Updates 
+
+### March 29th 2025
+
+Updated diretory paths for smooth git action updates. Working on accessing `.csv` files from data directory in the app.js file. Made a simple pipeline structure for data preprocessing in `scripts/update_data.py`
+
+**Further Implementation**
+
+The graph being displayed is a rough draft of what is to come. The main idea was to get the `d3` js library to integrate with the csv files. Still need to work on the visuals for the graph.
+
+
 
 ### March 27th 2025
 
