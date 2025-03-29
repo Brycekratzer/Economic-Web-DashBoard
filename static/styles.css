@@ -55,6 +55,7 @@ h2, h3 {
     justify-content: center;
 }
 
+/* Visualizer Box's */
 #viz1, #viz2 {
     background-color: var(--white);
     padding: 15px 15px 15px 15px;
@@ -62,6 +63,7 @@ h2, h3 {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* For Graph Lines */
 path {
     stroke-linejoin: round;
     fill: none;
@@ -75,11 +77,12 @@ path {
     
 }
 
+/* Header for Visuals */
 .viz-header{
     text-align: center;
     margin-top: 20px;
     width: 100%; 
     font-family: "Noto Sans", sans-serif;
-    font-weight: 100;
+    font-weight: 300;
 
 }
