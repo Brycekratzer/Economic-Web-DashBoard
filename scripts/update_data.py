@@ -22,5 +22,8 @@ SP500_120_Day = yf.download(sp_ticker, start=previous_120_days, end=today)
 SP500_50_Day_Formatted = SP500_50_Day['Close']
 SP500_50_Day_Formatted.index = SP500_50_Day.index
 
-SP500_50_Day.to_csv("../data/50_day.csv")
-SP500_120_Day.to_csv("../data/120_day.csv")
+SP500_120_Day_Formatted = SP500_120_Day['Close']
+SP500_120_Day_Formatted.index = SP500_120_Day.index
+
+SP500_50_Day_Formatted.to_csv("./data/50_day.csv")
+SP500_120_Day_Formatted.to_csv("./data/120_day.csv")

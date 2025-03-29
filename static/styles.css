@@ -31,6 +31,19 @@ h1, h2, h3 {
     color: var(--secondary-color);
 }
 
+/* Graph containers*/
+.graph-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 50px;
+}
+
+.graph-category {
+    background-color: var(--light-gray);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
 
 /* For Graph's */
 .viz{
