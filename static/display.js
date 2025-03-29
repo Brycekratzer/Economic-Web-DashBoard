@@ -11,8 +11,8 @@ const margin = {
 }
 
  // Adjust chart width and height based on outer margins
-const width = (200 * zoomSize) - margin.left - margin.right;
-const height = (400 * zoomSize) - margin.top - margin.bottom;
+const width = (150 * zoomSize) - margin.left - margin.right;
+const height = (150 * zoomSize) - margin.top - margin.bottom;
 
 // Get the id from the html
 const svg = d3.select("#viz")
@@ -20,7 +20,7 @@ const svg = d3.select("#viz")
 
   // Add back margin's to width and height to get "full picture" size
   .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.botoom )
+  .attr("height", height + margin.top + margin.bottom )
 
   // Groups all elements together
   .append("g") 
@@ -43,8 +43,10 @@ d3.csv("./data/120_day.csv")
         .range([0, width]);
     
     const yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d["^GSPC"])])
-        .range([height, 0]);
+        .domain(
+            [d3.min(data, d => d["^GSPC"]), 
+            d3.max(data, d => d["^GSPC"])])
+        .range([height,0]);
 
     // Create Labels for x and y features
     const xAxis = d3.axisBottom(xScale)
@@ -57,7 +59,50 @@ d3.csv("./data/120_day.csv")
             return d3.timeFormat("%b")(date); 
         })
     
-    const yAxis = d3.axisLeft(yScale);
+    const yAxis = d3.axisLeft(yScale)
+        .ticks(4);
+
+    // Add x and y labels to our grouping of elements "g"
+    svg.append("g")
+
+        // Adds HTML classifier for styling
+        .attr("class", "x-axis") 
+
+        // Adjust label position
+        .attr("transform", `translate(0, ${height})`)
+
+        // Adds xAxis labels based on the variables adjustments
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis);
+    
+    // Add Name for Axis's
+    svg.append("text")
+        .attr("class", "x-name")
+
+        // Puts text relative to the middle of x-axis
+        .attr("text-anchor", "middle")
+
+        // Calculations for position of name
+        .attr("x", width/2)
+        .attr("y", height + margin.bottom - 40)
+
+        .text("Date");
+    
+    svg.append("text")
+        .attr("class", "y-name")
+        .attr("text-anchor", "middle")
+
+        // Rotates text to be of vertical view
+        .attr("transform", "rotate(-90)")
+
+        // Position of text
+        .attr("y", -margin.left + 70)
+        .attr("x", -(height/2))
+        .text("S&P 500 Value")
+
 
     // Create line
     const lineGraph = d3.line()
@@ -67,7 +112,6 @@ d3.csv("./data/120_day.csv")
     svg.append("path")
         .datum(data)
         .attr("d", lineGraph)
-        .attr("fill", "none")
         .attr("stroke", "steelblue")
         .attr("stroke-width", 2);
 

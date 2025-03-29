@@ -16,8 +16,6 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--white);
-    
-    
 }
 
 .container {
@@ -33,11 +31,19 @@ h1, h2, h3 {
     color: var(--secondary-color);
 }
 
+
+/* For Graph's */
 .viz{
     border: 1px solid #ccc;
-    min-height: 400px;
 }
 
 path {
     stroke-linejoin: round;
+    fill: none;
+}
+
+.y-name, .x-name {
+    font-size: 1rem;
+    fill: var(--secondary-color);
+    
 }
