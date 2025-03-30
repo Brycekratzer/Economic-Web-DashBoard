@@ -77,6 +77,22 @@ const svgInterestRates = d3.select("#viz5")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Graph for Mortgage Rates
+const svgMortgageRates = d3.select("#viz6")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Mortgage Rates
+const svgInitialClaims = d3.select("#viz7")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 
 /**
  * Function for creating each graph based on data and configurations
@@ -232,6 +248,28 @@ d3.csv("./data/interest_rate_data.csv")
     createViz(svgInterestRates, data, {
         key: "DFF",
         yAxisLabel: "Fed Funds Spread Indicator",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/mortgage_rate_data.csv")
+  .then(function(data) {
+    createViz(svgMortgageRates, data, {
+        key: "MORTGAGE30US",
+        yAxisLabel: "Mortgage Rate Indicator",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/initial_claims_data.csv")
+  .then(function(data) {
+    createViz(svgInitialClaims, data, {
+        key: "ICSA",
+        yAxisLabel: "",
     });
 }).catch(function(error) {
     // Handle any errors

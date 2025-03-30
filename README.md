@@ -89,6 +89,10 @@ A data-driven web application that visualizes the current state of the United St
 
 ## Updates 
 
+### March 30th 2025
+
+Added Montary Policy Data, and moved the `updated_data.py` script to run only every Saturday as a good amount of economic indictors don't have readily available data updated daily.
+
 ### March 29th 2025
 
 Updated diretory paths for smooth git action updates. Working on accessing `.csv` files from data directory in the app.js file. Made a simple pipeline structure for data preprocessing in `scripts/update_data.py`
