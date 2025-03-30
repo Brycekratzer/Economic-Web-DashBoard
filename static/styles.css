@@ -62,7 +62,8 @@ h2, h3, h4 {
 }
 
 /* Visualizer Box's */
-#viz1, #viz2, #viz3, #viz4 {
+#viz1, #viz2, #viz3, #viz4, 
+#viz5 {
     margin-left: 40px;
     flex: 0 0 400px;
     width: 400px;

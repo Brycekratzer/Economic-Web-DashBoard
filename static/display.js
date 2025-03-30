@@ -53,6 +53,30 @@ const svg500_50 = d3.select("#viz2")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Graph for Treasury Yield Spread
+const svgT10Y2Y = d3.select("#viz3")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Treasury-Fed Funds Spread
+const svgT10YFF = d3.select("#viz4")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Interest Rates
+const svgInterestRates = d3.select("#viz5")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 
 /**
  * Function for creating each graph based on data and configurations
@@ -87,7 +111,7 @@ function createViz(svg, data, config){
     // Create Labels for x and y features
     const xAxis = d3.axisBottom(xScale)
         // Adds a label to our x-axis every month
-        .ticks(d3.timeMonth.every(1))
+        .ticks(d3.timeMonth.every(2))
         // Formats the months as ("Jan", "Feb", "Mar" , ...)
         .tickFormat(date => {
             return d3.timeFormat("%b")(date); 
@@ -139,7 +163,6 @@ function createViz(svg, data, config){
     svg.append("path")
         .datum(data)
         .attr("d", lineGraph)
-        // .attr("stroke", config.color)
         .attr("stroke-width", 2);
 }
 
@@ -148,38 +171,67 @@ function createViz(svg, data, config){
  * create a graph based on the configurations passed
  */
 
-d3.csv("./data/120_day.csv")
+d3.csv("./data/SP120_day.csv")
   .then(function(data) {
 
     createViz(svg500_120, data, {
 
         // The key is the name of our feature we are observing over time
-        key: "^GSPC",
+        key: "Moment",
 
         // Name of axis
-        yAxisLabel: "S&P 500 Value",
-
-        // Color of line
-        color: "steelblue",
+        yAxisLabel: "S&P 500 Momentum",
     });
 }).catch(function(error) {
     // Handle any errors
     console.log(error);
 });
 
-d3.csv("./data/50_day.csv")
+d3.csv("./data/SP50_day.csv")
   .then(function(data) {
 
     createViz(svg500_50, data, {
 
         // The key is the name of our feature we are observing over time
-        key: "^GSPC",
+        key: "Moment",
 
         // Name of axis
-        yAxisLabel: "S&P 500 Value",
+        yAxisLabel: "S&P 500 Momentum",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
 
-        // Color of line
-        color: "steelblue",
+d3.csv("./data/T10Y2Y_data.csv")
+  .then(function(data) {
+
+    createViz(svgT10Y2Y, data, {
+        key: "T10Y2Y",
+        yAxisLabel: "Yield Spread Indicator",
+    });
+}).catch(function(error) {
+    console.log(error);
+});
+
+d3.csv("./data/T10YFF_data.csv")
+  .then(function(data) {
+
+    createViz(svgT10YFF, data, {
+        key: "T10YFF",
+        yAxisLabel: "Yield Spread Indicator",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/interest_rate_data.csv")
+  .then(function(data) {
+
+    createViz(svgInterestRates, data, {
+        key: "DFF",
+        yAxisLabel: "Fed Funds Spread Indicator",
     });
 }).catch(function(error) {
     // Handle any errors
