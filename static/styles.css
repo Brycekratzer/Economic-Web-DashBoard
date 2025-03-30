@@ -56,12 +56,16 @@ h2, h3, h4 {
     gap: 20px;
     justify-content: center;
     text-align: center;
+    background-color: var(--light-gray);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Visualizer Box's */
 #viz1, #viz2, #viz3, #viz4 {
-    flex: 0 0 500px;
-    width: 500px;
+    flex: 0 0 300px;
+    width: 300px;
     background-color: var(--white);
     padding: 15px 15px 15px 15px;
     border-radius: 40px;
@@ -99,7 +103,7 @@ path {
 
 /* Label Names */
 .y-name, .x-name {
-    font-size: 1rem;
+    font-size: .7rem;
     fill: var(--mission-blue);
 }
 
