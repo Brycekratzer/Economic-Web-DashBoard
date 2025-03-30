@@ -2,6 +2,7 @@
 :root {
     --black: #3f3f3f;
     --gray: #e3e3e3;
+    --light-gray:#dbdbdb;
     --mission-blue: #3e577a;
     --white: #f1f0f0;
     --transition: all 0.3s ease;
@@ -50,9 +51,10 @@ h2, h3 {
 /* Graph Containers*/
 .graph-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 500px));
     gap: 20px;
     justify-content: center;
+    text-align: center;
 }
 
 /* Visualizer Box's */
@@ -61,6 +63,28 @@ h2, h3 {
     padding: 15px 15px 15px 15px;
     border-radius: 40px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    flex-direction: column;
+}
+
+/* Header for Visuals */
+.viz-header{
+    text-align: center;
+    margin-top: 20px;
+    width: 100%; 
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 300;
+}
+
+.viz-desription{
+    display: flex;
+    justify-content: center;
+    padding: 20px 30px;
+    background-color: var(--mission-blue);
+    font-size: .8rem;
+    color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
 }
 
 /* For Graph Lines */
@@ -74,15 +98,14 @@ path {
 .y-name, .x-name {
     font-size: 1rem;
     fill: var(--mission-blue);
-    
 }
 
-/* Header for Visuals */
-.viz-header{
-    text-align: center;
-    margin-top: 20px;
-    width: 100%; 
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 300;
-
+footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px 30px;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 400px;
 }

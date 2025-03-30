@@ -11,14 +11,14 @@
 /**
  * Creating "graph frame" constants for setting up layout
  */
-const zoomSize = 2;
+const zoomSize = 3;
 
 // Margin is our "inner frame"
 const margin = { 
     top: 20 * zoomSize,
     right: 20 * zoomSize, 
-    bottom: 30 * zoomSize, // A larger bottom accounts for more room for labels
-    left: 40 * zoomSize, // A larger left accounts for more room for labels
+    bottom: 20 * zoomSize, // A larger bottom accounts for more room for labels
+    left: 25 * zoomSize, // A larger left accounts for more room for labels
 }
 
  // Adjust chart width and height based on outer margins
@@ -127,7 +127,7 @@ function createViz(svg, data, config){
         .attr("transform", "rotate(-90)")
 
         // Position of text
-        .attr("y", -margin.left + 30)
+        .attr("y", -margin.left + 25)
         .attr("x", -(height/2))
         .text(config.yAxisLabel);
 
