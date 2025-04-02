@@ -3,3 +3,5 @@ pandas
 numpy
 pandas_ta
 pandas_datareader
+transformers
+torch

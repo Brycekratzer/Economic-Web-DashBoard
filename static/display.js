@@ -93,6 +93,38 @@ const svgInitialClaims = d3.select("#viz7")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Graph for Retail Sales
+const svgRetailSales = d3.select("#viz8")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Unemployment Rate
+const svgUnRate = d3.select("#viz9")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Construction Job Listing
+const svgConstRate = d3.select("#viz10")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for CPI
+const svgCPI = d3.select("#viz11")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 
 /**
  * Function for creating each graph based on data and configurations
@@ -276,4 +308,47 @@ d3.csv("./data/initial_claims_data.csv")
     console.log(error);
 });
 
+d3.csv("./data/retail_sales_data.csv")
+  .then(function(data) {
+    createViz(svgRetailSales, data, {
+        key: "RSAFS",
+        yAxisLabel: "Retail Sales",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/unemployment_data.csv")
+  .then(function(data) {
+    createViz(svgUnRate, data, {
+        key: "UNRATE",
+        yAxisLabel: "Unemployment Rate",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/construction_jobs_data.csv")
+  .then(function(data) {
+    createViz(svgConstRate, data, {
+        key: "JTS2300JOL",
+        yAxisLabel: "Unemployment Rate",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/cpi_data.csv")
+  .then(function(data) {
+    createViz(svgCPI, data, {
+        key: "CPIAUCSL",
+        yAxisLabel: "CPI",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
 
