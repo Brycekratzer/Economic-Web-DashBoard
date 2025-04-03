@@ -415,14 +415,8 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 28) + "px");
         })
-        .on("mouseout", function() {
+        .on("mouseout touchend touchcancel", function() {
             // Hide tooltip
-            tooltip.transition()
-                .duration(250)
-                .style("opacity", 0);
-        })
-        .on("touchend touchcancel", function() {
-
             tooltip.transition()
                 .duration(250)
                 .style("opacity", 0);
