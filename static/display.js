@@ -141,6 +141,22 @@ const svgDJprediction = d3.select("#viz13")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Graph for S&P Prediction
+const svgSPprediction50 = d3.select("#viz14")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Dow Jones Prediction
+const svgDJprediction50 = d3.select("#viz15")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 /**
  * The tooltip div that appears when hovering over data points
  */
@@ -579,6 +595,32 @@ Promise.all([
     const actualDataDJ = data[0];
     const predictionDataDJ = data[1]; 
     createCombinedStockViz(svgDJprediction, actualDataDJ, predictionDataDJ, {
+        key: "^DJI Close",
+        yAxisLabel: "Dow Jones Value"
+    });
+
+
+}).catch(function(error) {
+    console.log("Error loading S&P prediction data:", error);
+});
+
+// Display stock data
+Promise.all([
+    d3.csv("./data/pre_prediction_stocks_50_prior.csv"),
+    d3.csv("./data/prediction_stocks_50_prior.csv")
+]).then(function(data) {
+    const actualDataSP = data[0];
+    const predictionDataSP = data[1];
+
+    createCombinedStockViz(svgSPprediction50, actualDataSP, predictionDataSP, {
+        key: "^GSPC Close",
+        yAxisLabel: "S&P 500 Value"
+    });
+
+    const actualDataDJ = data[0];
+    const predictionDataDJ = data[1]; 
+    const futureDataDJ = data[2];
+    createCombinedStockViz(svgDJprediction50, actualDataDJ, predictionDataDJ, {
         key: "^DJI Close",
         yAxisLabel: "Dow Jones Value"
     });
