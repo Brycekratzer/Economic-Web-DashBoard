@@ -262,7 +262,7 @@ function createViz(svg, data, config){
             
             // Show tooltip
             tooltip.transition()
-                .duration(200)
+                .duration(0)
                 .style("opacity", 0.9);
             tooltip.html(`<strong>Date:</strong> ${formattedDate}<br><strong>${config.yAxisLabel}:</strong> ${formattedValue}`)
                 .style("left", (event.pageX + 10) + "px")
@@ -271,7 +271,7 @@ function createViz(svg, data, config){
         .on("mouseout", function() {
             // Hide tooltip
             tooltip.transition()
-                .duration(500)
+                .duration(0)
                 .style("opacity", 0);
         });
 }   
@@ -409,7 +409,7 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
             
             // Show tooltip
             tooltip.transition()
-                .duration(200)
+                .duration(0)
                 .style("opacity", 0.9);
             tooltip.html(`<strong>Date:</strong> ${formattedDate}<br><strong>${config.yAxisLabel}:</strong> ${formattedValue}`)
                 .style("left", (event.pageX + 10) + "px")
@@ -418,7 +418,13 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         .on("mouseout", function() {
             // Hide tooltip
             tooltip.transition()
-                .duration(500)
+                .duration(250)
+                .style("opacity", 0);
+        })
+        .on("touchend touchcancel", function() {
+
+            tooltip.transition()
+                .duration(250)
                 .style("opacity", 0);
         });
 
@@ -478,7 +484,7 @@ d3.csv("./data/T10YFF_data.csv")
 
     createViz(svgT10YFF, data, {
         key: "T10YFF",
-        yAxisLabel: "Yield Spread Indicator",
+        yAxisLabel: "Fed Funds Spread Indicator",
     });
 }).catch(function(error) {
     // Handle any errors
@@ -490,7 +496,7 @@ d3.csv("./data/interest_rate_data.csv")
 
     createViz(svgInterestRates, data, {
         key: "DFF",
-        yAxisLabel: "Fed Funds Spread Indicator",
+        yAxisLabel: "Interest Rates",
     });
 }).catch(function(error) {
     // Handle any errors
