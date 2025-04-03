@@ -39,7 +39,7 @@ ft_model.load_state_dict(state_dict)
 pred_and_original_data = pd.read_csv('./data/Model_Data.csv')
 
 # Filter out data to only contain features needed and Date for merging
-pred_and_original_data = pred_and_original_data[['DATE']+features_to_pred]
+pred_and_original_data = pred_and_original_data[['Date']+features_to_pred]
 
 # How many predictions we will recursively make
 NUM_ITER = 10
@@ -48,7 +48,7 @@ NUM_ITER = 10
 for day in range(NUM_ITER):
     
     # Drop the date for prediction
-    df_copy = pred_and_original_data.drop(['DATE'], axis=1)
+    df_copy = pred_and_original_data.drop(['Date'], axis=1)
     
     
     with torch.no_grad():
@@ -67,7 +67,7 @@ for day in range(NUM_ITER):
     pred_np = predictions
     
     # Get the last date in the dataset
-    last_date = pd.to_datetime(pred_and_original_data['DATE'])
+    last_date = pd.to_datetime(pred_and_original_data['Date'])
     last_date = last_date[len(pred_and_original_data) - 1]
 
     # Create date range for predictions
@@ -79,10 +79,10 @@ for day in range(NUM_ITER):
     
     # Create a dataframe of our predictions with their corresponding dates
     pred_df = pd.DataFrame(pred_np, columns=features_to_pred)
-    pred_df['DATE'] = future_dates
+    pred_df['Date'] = future_dates
 
     # Add predictions to dataset
     pred_and_original_data = pd.concat([pred_and_original_data, pred_df], ignore_index=True)
-    pred_and_original_data['DATE'] = pd.to_datetime(pred_and_original_data['DATE'])
+    pred_and_original_data['Date'] = pd.to_datetime(pred_and_original_data['Date'])
 pred_and_original_data[:len(pred_and_original_data) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
 pred_and_original_data[len(pred_and_original_data) - NUM_ITER*PRED_LEN:len(pred_and_original_data)].to_csv('./data/prediction_stocks.csv')

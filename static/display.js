@@ -125,6 +125,22 @@ const svgCPI = d3.select("#viz11")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Graph for S&P Prediction
+const svgSPprediction = d3.select("#viz12")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Dow Jones Prediction
+const svgDJprediction = d3.select("#viz13")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 
 /**
  * Function for creating each graph based on data and configurations
@@ -346,6 +362,29 @@ d3.csv("./data/cpi_data.csv")
     createViz(svgCPI, data, {
         key: "CPIAUCSL",
         yAxisLabel: "CPI",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+d3.csv("./data/pre_prediction_stocks.csv")
+  .then(function(data) {
+    createViz(svgSPprediction, data, {
+        key: "^GSPC Close",
+        yAxisLabel: "S&P Value",
+    });
+}).catch(function(error) {
+    // Handle any errors
+    console.log(error);
+});
+
+
+d3.csv("./data/prediction_stocks.csv")
+  .then(function(data) {
+    createViz(svgSPprediction, data, {
+        key: "^GSPC Close",
+        yAxisLabel: "S&P Value",
     });
 }).catch(function(error) {
     // Handle any errors

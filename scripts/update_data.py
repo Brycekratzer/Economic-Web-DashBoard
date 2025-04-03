@@ -54,7 +54,6 @@ def get_stock_data(ticker, start_date, end_date):
     copy_df = copy_df[['Date','Close']]
     copy_df.columns = copy_df.columns.get_level_values(0)
     copy_df = copy_df.rename(columns={
-           'Date'  : 'DATE',
            'Close' : f'{ticker} Close'
     })
     return copy_df
@@ -63,7 +62,7 @@ def add_data_based_on_date(main_df, new_data, col_name):
     return pd.merge_asof(
             main_df, 
             new_data,
-            on='DATE',
+            on='Date',
             direction='forward' # How we fill the gaps when adding content
         )[col_name]
     
@@ -96,7 +95,7 @@ DJ_data = get_stock_data(dj_ticker, previous_120_days, today)
 
 combined_df = pd.DataFrame()
 
-combined_df['DATE'] = SP_data['DATE']
+combined_df['Date'] = SP_data['Date']
 
 # Adding Stock Markets
 combined_df[f'{sp_ticker} Close'] = add_data_based_on_date(combined_df, SP_data, f'{sp_ticker} Close')
