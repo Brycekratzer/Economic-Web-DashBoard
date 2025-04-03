@@ -401,9 +401,9 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         .attr("r", 15)
         .style("opacity", 0) // Make them invisible
         .style("cursor", "pointer")
-        .on("mouseover", function(event, d) {
+        .on("mouseover touchstart", function(event, d) {
             // Format date for display
-            const formattedDate = d3.timeFormat("%b %d, %Y")(d.Date);
+            const formattedDate = d3.timeFormat("%b, %Y")(d.Date);
             // Format value based on data type
             const formattedValue = d[config.key].toFixed(2);
             
