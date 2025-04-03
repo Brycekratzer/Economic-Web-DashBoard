@@ -141,6 +141,22 @@ const svgDJprediction = d3.select("#viz13")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+/**
+ * The tooltip div that appears when hovering over data points
+ */
+const tooltip = d3.select("body").append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0)
+  .style("position", "absolute")
+  .style("background-color", "white")
+  .style("border", "1px solid #ddd")
+  .style("border-radius", "3px")
+  .style("padding", "8px")
+  .style("pointer-events", "none")
+  .style("font-size", "12px")
+  .style("box-shadow", "0px 0px 6px rgba(0,0,0,0.15)");
+
+
 
 /**
  * Function for creating each graph based on data and configurations
@@ -228,7 +244,37 @@ function createViz(svg, data, config){
         .datum(data)
         .attr("d", lineGraph)
         .attr("stroke-width", 2);
-}
+
+    svg.selectAll(".hover-point")
+        .data(data)
+        .enter().append("circle")
+        .attr("class", "hover-point")
+        .attr("cx", d => xScale(d.Date))
+        .attr("cy", d => yScale(d[config.key]))
+        .attr("r", 20)
+        .style("opacity", 0) // Make them invisible
+        .style("cursor", "pointer")
+        .on("mouseover", function(event, d) {
+            // Format date for display
+            const formattedDate = d3.timeFormat("%b %d, %Y")(d.Date);
+            // Format value based on data type
+            const formattedValue = d[config.key].toFixed(2);
+            
+            // Show tooltip
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 0.9);
+            tooltip.html(`<strong>Date:</strong> ${formattedDate}<br><strong>${config.yAxisLabel}:</strong> ${formattedValue}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            // Hide tooltip
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+}   
 
 /**
  * This function creates a combined visualization of actual and predicted stock data
@@ -297,7 +343,7 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         .attr("class", "y-name")
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left + 10)
+        .attr("y", -margin.left + 8)
         .attr("x", -(height/2))
         .text(config.yAxisLabel);
 
@@ -323,6 +369,9 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         .attr("stroke-dasharray", "5,5")
         .attr("fill", "none");
 
+
+    // This adds a connecting line from end of the actual values to the 
+    // Start of the predicited values
     if (actualData.length > 0 && predictionData.length > 0) {
             // Get the last point of actual data and first point of prediction data
             const lastActualPoint = actualData[actualData.length - 1];
@@ -340,6 +389,40 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
                 .attr("stroke-dasharray", "5,5")
                 .attr("fill", "none");
     }
+
+
+    // Adds mini display of value when user hovers over graph line
+    svg.selectAll(".hover-point")
+        .data(allData)
+        .enter().append("circle")
+        .attr("class", "hover-point")
+        .attr("cx", d => xScale(d.Date))
+        .attr("cy", d => yScale(d[config.key]))
+        .attr("r", 15)
+        .style("opacity", 0) // Make them invisible
+        .style("cursor", "pointer")
+        .on("mouseover", function(event, d) {
+            // Format date for display
+            const formattedDate = d3.timeFormat("%b %d, %Y")(d.Date);
+            // Format value based on data type
+            const formattedValue = d[config.key].toFixed(2);
+            
+            // Show tooltip
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 0.9);
+            tooltip.html(`<strong>Date:</strong> ${formattedDate}<br><strong>${config.yAxisLabel}:</strong> ${formattedValue}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            // Hide tooltip
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
+
 }
 
 /**
