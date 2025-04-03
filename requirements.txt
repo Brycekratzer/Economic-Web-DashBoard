@@ -6,3 +6,4 @@ pandas_datareader
 transformers
 torch
 datetime
+scikit-learn

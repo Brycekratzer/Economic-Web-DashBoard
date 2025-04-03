@@ -6,6 +6,31 @@ import pandas_datareader as pdr
 import pandas_ta as ta
 import datetime
 from datetime import timedelta
+from sklearn.preprocessing import RobustScaler
+
+
+#
+# Variables from model used to get the right amount of previous days for the model input
+# Variables from FRED and yfinance to gather data
+#
+
+CONTEXT_LEN = 120
+WINDOW_SIZE = int(365 * 1.5)
+sp_ticker = '^GSPC'
+dj_ticker = '^DJI'
+cpi_code = 'CPIAUCSL'
+interest_rate_code = 'DFF'
+unempl_rates = 'UNRATE'
+initial_claims = 'ICSA'
+job_openings_construction = 'JTS2300JOL'
+mortgage_30_year = 'MORTGAGE30US'
+retail_sales = 'RSAFS'
+T10Y2Y = 'T10Y2Y'
+T10YFF = 'T10YFF'
+
+#
+# Defining Functions 
+#
 
 # Rate of change function
 def rate_of_change(df, col, days_previous):
@@ -58,6 +83,7 @@ def get_stock_data(ticker, start_date, end_date):
     })
     return copy_df
 
+# For adding stock data to model data
 def add_data_based_on_date(main_df, new_data, col_name):
     return pd.merge_asof(
             main_df, 
@@ -66,40 +92,67 @@ def add_data_based_on_date(main_df, new_data, col_name):
             direction='forward' # How we fill the gaps when adding content
         )[col_name]
     
-# Variable from model used to get the right amount of previous days for the model input
-CONTEXT_LEN = 120
+# For normalizing stock data
+def norm_data_st(df, col, window_size=90):
+    df_scaled = df.copy()
+
+    # Moving through each row starting at 
+    # window_size and going to df length
+    for i in range(window_size, len(df)):
+
+        # Grabs data from past
+        time_window = df.iloc[i-window_size:i]
+
+        # Grab current time
+        current_time = df.iloc[i:i+1]
+
+        # Create scaler on based on window
+        robust_scaler = RobustScaler()
+        robust_scaler.fit(time_window[col])
+
+        # Apply scaler to current index feature
+        scaled_values = robust_scaler.transform(current_time[col])
+        df_scaled.loc[df.index[i], col] = scaled_values[0]
+    return df_scaled
+
+
+# For adjusting for inflation
+def adjust_for_inflation(df, features, CPI_yearly_amount, CPI_2025):
+    df = df.copy()
+
+    # Get Year for both DF's
+    df['Year'] = df['Date'].dt.year
+    CPI_yearly_amount = CPI_yearly_amount.rename(columns={'Date' : 'Year'})
+
+    # Add a new column to the df that has the CPI for each year
+    df = pd.merge_asof(df, CPI_yearly_amount, on='Year', direction='forward')
+                        
+    # Adjust each value for inflation       
+    for feature in features:
+        df[feature] = df[feature] * (CPI_2025 / df[cpi_code])
+        
+    df = df.drop([cpi_code, 'Year'], axis=1)
+        
+    return df
+
+#
+# Getting proper dates for data gathering
+#
 
 # Getting dates to examine previous 50 days and 120 days of the S&P 500 and Dow Jones
-today = datetime.date.today()
+today = datetime.date.today() + timedelta(days=1)
 previous_365_days = today - timedelta(days=365)
-previous_120_days = today - timedelta(days=CONTEXT_LEN + 90) # Include a buffer for weekends
 
-sp_ticker = '^GSPC'
-dj_ticker = '^DJI'
-cpi_code = 'CPIAUCSL'
-interest_rate_code = 'DFF'
-unempl_rates = 'UNRATE'
-initial_claims = 'ICSA'
-job_openings_construction = 'JTS2300JOL'
-mortgage_30_year = 'MORTGAGE30US'
-retail_sales = 'RSAFS'
-T10Y2Y = 'T10Y2Y'
-T10YFF = 'T10YFF'
+# Include a padding for weekends and get a year and half of prior data for normalization
+previous_120_days = today - timedelta(days=((CONTEXT_LEN * 2 + WINDOW_SIZE * 2)))
+
+
+#
+# Getting data for analysis portion of website 
+#
 
 # Get Data for SP500
 SP500_365_Day = yf.download(sp_ticker, start=previous_365_days, end=today)
-
-# Get Data for model
-SP_data = get_stock_data(sp_ticker, previous_120_days, today)
-DJ_data = get_stock_data(dj_ticker, previous_120_days, today)
-
-combined_df = pd.DataFrame()
-
-combined_df['Date'] = SP_data['Date']
-
-# Adding Stock Markets
-combined_df[f'{sp_ticker} Close'] = add_data_based_on_date(combined_df, SP_data, f'{sp_ticker} Close')
-combined_df[f'{dj_ticker} Close'] = add_data_based_on_date(combined_df, DJ_data, f'{dj_ticker} Close')
 
 # Get Monetary Policy Data from FRED
 cpi_df = get_FRED_data(cpi_code, previous_365_days, today)
@@ -123,6 +176,35 @@ retail_df = filter_data(retail_df, [retail_sales]).ffill()
 T10Y2Y_df = filter_data(T10Y2Y_df, [T10Y2Y]).ffill()
 T10YFF_df = filter_data(T10YFF_df, [T10YFF]).ffill()
 
+#
+# Adjusting Stock Price's for inflation and normalizing data 
+# for model development.
+#
+
+# Get the average CPI for each year to calculate inflation
+CPI_yearly_amount = cpi_df.groupby(cpi_df['Date'].dt.year)[cpi_code].mean().reset_index()
+
+# For later calculations
+CPI_2025 = CPI_yearly_amount[CPI_yearly_amount['Date'] == 2025][cpi_code].values[0]
+
+# Get Data for model
+SP_data = get_stock_data(sp_ticker, previous_120_days, today)
+DJ_data = get_stock_data(dj_ticker, previous_120_days, today)
+
+# Gather Data For model
+combined_df = pd.DataFrame()
+combined_df['Date'] = SP_data['Date']
+
+# Adding Stock Markets
+combined_df[f'{sp_ticker} Close'] = add_data_based_on_date(combined_df, SP_data, f'{sp_ticker} Close')
+combined_df[f'{dj_ticker} Close'] = add_data_based_on_date(combined_df, DJ_data, f'{dj_ticker} Close')
+combined_df = adjust_for_inflation(combined_df, [f'{sp_ticker} Close', f'{dj_ticker} Close'], CPI_yearly_amount, CPI_2025)
+
+# For denormilzation of data after prediction
+pre_norm_stock_data = combined_df.copy()
+
+# Normalize data for model
+post_norm_stock_data = norm_data_st(combined_df, [f'{sp_ticker} Close', f'{dj_ticker} Close'], WINDOW_SIZE)
 
 SP500_50day_momentum = get_momentum(SP500_365_Day, 'Close', 'Date', num_rows=50)
 SP500_120day_momentum = get_momentum(SP500_365_Day, 'Close', 'Date', num_rows=120)
@@ -140,6 +222,7 @@ mortgage_rate_df.to_csv("./data/mortgage_rate_data.csv")
 retail_df.to_csv("./data/retail_sales_data.csv")
 T10Y2Y_df.to_csv("./data/T10Y2Y_data.csv")
 T10YFF_df.to_csv("./data/T10YFF_data.csv")
-combined_df.to_csv("./data/Model_Data.csv")
+post_norm_stock_data.to_csv("./data/Post_Norm_Model_Data.csv")
+pre_norm_stock_data.to_csv("./data/Pre_Norm_Model_Data.csv")
 
 

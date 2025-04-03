@@ -2,11 +2,35 @@ import torch
 import pandas as pd
 from datetime import datetime, timedelta
 from transformers import PatchTSTConfig, PatchTSTForPrediction
+from sklearn.preprocessing import RobustScaler
 
+
+def norm_data_st(norm_df, df, col, window_size=90):
+    denorm_df = norm_df.copy()
+
+    # Moving through each row starting at 
+    # window_size and going to df length
+    for i in range(window_size, len(norm_df)):
+        # Grabs data from past
+        time_window = df.iloc[i - window_size:i]
+        print(time_window['Date'])
+
+        # Grab current time
+        current_time = norm_df.iloc[i:i+1]
+
+        # Create scaler on based on window
+        robust_scaler = RobustScaler()
+        robust_scaler.fit(time_window[col])
+
+        # Apply scaler to current index feature
+        denomralized_values = robust_scaler.inverse_transform(current_time[col])
+        denorm_df.loc[norm_df.index[i], col] = denomralized_values[0]
+    return denorm_df
+
+# Used for denormalizing data
+WINDOW_SIZE = int(365 * 1.5)
 # How many features we are including 
 NUM_INPUT = 2
-# Batch size for training
-BATCH_SIZE = 8
 # For What we are predicting
 NUM_TARGET = 2
 # How many steps we take in the context length
@@ -36,7 +60,7 @@ state_dict = torch.load('./model/pt_v2_ft_v1_model.bin', map_location=torch.devi
 ft_model.load_state_dict(state_dict)
 
 # Get the normalized economic data
-pred_and_original_data = pd.read_csv('./data/Model_Data.csv')
+pred_and_original_data = pd.read_csv('./data/Post_Norm_Model_Data.csv')
 
 # Filter out data to only contain features needed and Date for merging
 pred_and_original_data = pred_and_original_data[['Date']+features_to_pred]
@@ -85,7 +109,16 @@ for day in range(NUM_ITER):
     pred_and_original_data = pd.concat([pred_and_original_data, pred_df], ignore_index=True)
     pred_and_original_data['Date'] = pd.to_datetime(pred_and_original_data['Date'])
     
-filtered_start = int(len(pred_and_original_data) * .60)
+# Load in unnormalized data and format to match features we are predicting
+original_df = pd.read_csv('./data/Pre_Norm_Model_Data.csv')
+original_df = original_df[['Date'] + features_to_pred]
+original_df['Date'] = pd.to_datetime(original_df['Date'])
+
+# Get columns to normalize that doesn't include date.
+columns_to_unnormalize = pred_and_original_data.drop(['Date'], axis=1).columns
+unnorm_df = norm_data_st(pred_and_original_data, original_df, columns_to_unnormalize,WINDOW_SIZE)    
+
+filtered_start = int(len(unnorm_df) * .90)
     
-pred_and_original_data[filtered_start:len(pred_and_original_data) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
-pred_and_original_data[len(pred_and_original_data) - NUM_ITER*PRED_LEN:len(pred_and_original_data)].to_csv('./data/prediction_stocks.csv')
+unnorm_df[filtered_start:len(unnorm_df) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
+unnorm_df[len(unnorm_df) - NUM_ITER*PRED_LEN:len(unnorm_df)].to_csv('./data/prediction_stocks.csv')
