@@ -92,6 +92,20 @@ A data-driven web application that visualizes the current state of the United St
 
 ## Updates 
 
+### April 2025
+
+Implemented a working predicitive pipieline using a pretrained PatchTST model. All
+pretraining was done locally using a derived historical csv file from 1994-2025. 
+
+#### TODO
+
+- make the graph on front end able to see points when you hover over the line on
+    graph.
+
+- fix weird centering bug for metric containers on front end
+
+- display date for when model and data was last updated
+
 ### March 30th 2025
 
 Added Montary Policy Data, and moved the `updated_data.py` script to run only every Saturday as a good amount of economic indictors don't have readily available data updated daily.
