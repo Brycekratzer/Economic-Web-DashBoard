@@ -32,7 +32,7 @@ features_to_pred = ['^GSPC Close', '^DJI Close']
 ft_model = PatchTSTForPrediction(ft_config)
 
 # Load in our model
-state_dict = torch.load('./model/pt_v2_ft_v1_model.bin')
+state_dict = torch.load('./model/pt_v2_ft_v1_model.bin', map_location=torch.device('cpu'))
 ft_model.load_state_dict(state_dict)
 
 # Get the normalized economic data
