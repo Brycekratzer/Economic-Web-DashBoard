@@ -231,6 +231,118 @@ function createViz(svg, data, config){
 }
 
 /**
+ * This function creates a combined visualization of actual and predicted stock data
+ * @param {d3.Selection} svg - The SVG element to draw the visualization in
+ * @param {Array} actualData - Historical stock data
+ * @param {Array} predictionData - Predicted stock data
+ * @param {Object} config - Configuration object for the visualization
+ */
+function createCombinedStockViz(svg, actualData, predictionData, config){
+
+    // Actual Data to show
+    actualData.forEach(function(d) {
+        d.Date = new Date(d.Date);
+        d[config.key] = +d[config.key];
+    });
+
+    // Prediction Data to show
+    predictionData.forEach(function(d) {
+        d.Date = new Date(d.Date);
+        d[config.key] = +d[config.key];
+    });
+
+    // Combining Data for domain calculations
+    const allData = actualData.concat(predictionData);
+
+    // Create scales for x and y feats
+    const xScale = d3.scaleTime()
+        .domain(d3.extent(allData, d => d.Date))
+        .range([0, width]);
+
+    const yScale = d3.scaleLinear()
+        .domain([
+            d3.min(allData, d => d[config.key]),
+            d3.max(allData, d => d[config.key])
+        ])
+        .range([height, 0]);
+
+    // Create labels for x and y features
+    const xAxis = d3.axisBottom(xScale)
+        .ticks(d3.timeMonth.every(2))
+        .tickFormat(date => {
+            return d3.timeFormat("%b")(date); 
+        });
+
+    const yAxis = d3.axisLeft(yScale)
+        .ticks(4);
+    // Add x and y labels
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${height})`)
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis);
+
+    // Add axis labels
+    svg.append("text")
+        .attr("class", "x-name")
+        .attr("text-anchor", "middle")
+        .attr("x", width/2)
+        .attr("y", height + margin.bottom - 5)
+        .text("Date");
+    
+    svg.append("text")
+        .attr("class", "y-name")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left + 10)
+        .attr("x", -(height/2))
+        .text(config.yAxisLabel);
+
+    // Create line generators
+    const createLine = d3.line()
+        .x(d => xScale(d.Date))
+        .y(d => yScale(d[config.key]));
+
+    // Draw historical data line with solid style
+    svg.append("path")
+        .datum(actualData)
+        .attr("d", createLine)
+        .attr("stroke", config.color || "var(--mission-blue)")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
+    
+    // Draw prediction line with dashed style
+    svg.append("path")
+        .datum(predictionData)
+        .attr("d", createLine)
+        .attr("stroke", config.predictionColor || "var(--mission-blue)")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "5,5")
+        .attr("fill", "none");
+
+    if (actualData.length > 0 && predictionData.length > 0) {
+            // Get the last point of actual data and first point of prediction data
+            const lastActualPoint = actualData[actualData.length - 1];
+            const firstPredictionPoint = predictionData[0];
+            
+            // Create a connector path with just these two points
+            const connectorData = [lastActualPoint, firstPredictionPoint];
+            
+            // Draw the connector line with dotted style
+            svg.append("path")
+                .datum(connectorData)
+                .attr("d", createLine)
+                .attr("stroke", config.predictionColor || "var(--mission-blue)")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "5,5")
+                .attr("fill", "none");
+    }
+}
+
+/**
  * Initializes each graph by loading a CSV file then calling the createViz function to 
  * create a graph based on the configurations passed
  */
@@ -368,26 +480,28 @@ d3.csv("./data/cpi_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/pre_prediction_stocks.csv")
-  .then(function(data) {
-    createViz(svgSPprediction, data, {
+// Display stock data
+Promise.all([
+    d3.csv("./data/pre_prediction_stocks.csv"),
+    d3.csv("./data/prediction_stocks.csv")
+]).then(function(data) {
+    const actualDataSP = data[0];
+    const predictionDataSP = data[1];
+
+    createCombinedStockViz(svgSPprediction, actualDataSP, predictionDataSP, {
         key: "^GSPC Close",
-        yAxisLabel: "S&P Value",
+        yAxisLabel: "S&P 500 Value"
     });
-}).catch(function(error) {
-    // Handle any errors
-    console.log(error);
-});
+
+    const actualDataDJ = data[0];
+    const predictionDataDJ = data[1]; 
+    createCombinedStockViz(svgDJprediction, actualDataDJ, predictionDataDJ, {
+        key: "^DJI Close",
+        yAxisLabel: "Dow Jones Value"
+    });
 
 
-d3.csv("./data/prediction_stocks.csv")
-  .then(function(data) {
-    createViz(svgSPprediction, data, {
-        key: "^GSPC Close",
-        yAxisLabel: "S&P Value",
-    });
 }).catch(function(error) {
-    // Handle any errors
-    console.log(error);
+    console.log("Error loading S&P prediction data:", error);
 });
 

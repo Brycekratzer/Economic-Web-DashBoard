@@ -84,5 +84,8 @@ for day in range(NUM_ITER):
     # Add predictions to dataset
     pred_and_original_data = pd.concat([pred_and_original_data, pred_df], ignore_index=True)
     pred_and_original_data['Date'] = pd.to_datetime(pred_and_original_data['Date'])
-pred_and_original_data[:len(pred_and_original_data) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
+    
+filtered_start = int(len(pred_and_original_data) * .60)
+    
+pred_and_original_data[filtered_start:len(pred_and_original_data) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
 pred_and_original_data[len(pred_and_original_data) - NUM_ITER*PRED_LEN:len(pred_and_original_data)].to_csv('./data/prediction_stocks.csv')
