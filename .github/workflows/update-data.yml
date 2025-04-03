@@ -50,6 +50,9 @@ jobs:
       
       - name: Run data update script
         run: python scripts/update_data.py
+        
+      - name: Run model update script
+        run: python scripts/update_prediction.py
       
       # Diagnostic step to see what changed
       - name: Show changes

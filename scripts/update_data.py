@@ -73,7 +73,7 @@ CONTEXT_LEN = 120
 # Getting dates to examine previous 50 days and 120 days of the S&P 500 and Dow Jones
 today = datetime.date.today()
 previous_365_days = today - timedelta(days=365)
-previous_120_days = today - timedelta(days=CONTEXT_LEN)
+previous_120_days = today - timedelta(days=CONTEXT_LEN + 90) # Include a buffer for weekends
 
 sp_ticker = '^GSPC'
 dj_ticker = '^DJI'
@@ -100,7 +100,7 @@ combined_df['DATE'] = SP_data['DATE']
 
 # Adding Stock Markets
 combined_df[f'{sp_ticker} Close'] = add_data_based_on_date(combined_df, SP_data, f'{sp_ticker} Close')
-combined_df[f'{sp_ticker} Close'] = add_data_based_on_date(combined_df, DJ_data, f'{sp_ticker} Close')
+combined_df[f'{dj_ticker} Close'] = add_data_based_on_date(combined_df, DJ_data, f'{dj_ticker} Close')
 
 # Get Monetary Policy Data from FRED
 cpi_df = get_FRED_data(cpi_code, previous_365_days, today)

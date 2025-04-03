@@ -32,20 +32,17 @@ features_to_pred = ['^GSPC Close', '^DJI Close']
 ft_model = PatchTSTForPrediction(ft_config)
 
 # Load in our model
-device = torch.device('cpu')
-state_dict = torch.load('pt_v2_ft_v1_model.bin')
+state_dict = torch.load('./model/pt_v2_ft_v1_model.bin')
 ft_model.load_state_dict(state_dict)
 
-ft_model = ft_model.to(device)
-
 # Get the normalized economic data
-pred_and_original_data = pd.read_csv('../data/Economic_Data_1994-2025.csv')
+pred_and_original_data = pd.read_csv('./data/Model_Data.csv')
 
 # Filter out data to only contain features needed and Date for merging
 pred_and_original_data = pred_and_original_data[['DATE']+features_to_pred]
 
 # How many predictions we will recursively make
-NUM_ITER = 120
+NUM_ITER = 10
 
 # Autoregression
 for day in range(NUM_ITER):
@@ -87,3 +84,5 @@ for day in range(NUM_ITER):
     # Add predictions to dataset
     pred_and_original_data = pd.concat([pred_and_original_data, pred_df], ignore_index=True)
     pred_and_original_data['DATE'] = pd.to_datetime(pred_and_original_data['DATE'])
+pred_and_original_data[:len(pred_and_original_data) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
+pred_and_original_data[len(pred_and_original_data) - NUM_ITER*PRED_LEN:len(pred_and_original_data)].to_csv('./data/prediction_stocks.csv')
