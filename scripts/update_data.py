@@ -209,20 +209,20 @@ post_norm_stock_data = norm_data_st(combined_df, [f'{sp_ticker} Close', f'{dj_ti
 SP500_50day_momentum = get_momentum(SP500_365_Day, 'Close', 'Date', num_rows=50)
 SP500_120day_momentum = get_momentum(SP500_365_Day, 'Close', 'Date', num_rows=120)
 
-SP500_50day_momentum.to_csv("./data/SP50_day.csv")
-SP500_120day_momentum .to_csv("./data/SP120_day.csv")
+SP500_50day_momentum.to_csv("./data/stock_momentum/SP50_day.csv")
+SP500_120day_momentum .to_csv("./data/stock_momentum/SP120_day.csv")
 
 # Save FRED data frames to CSV files
-cpi_df.to_csv("./data/cpi_data.csv")
-interest_df.to_csv("./data/interest_rate_data.csv")
-unemployment_df.to_csv("./data/unemployment_data.csv")
-initial_claims_df.to_csv("./data/initial_claims_data.csv")
-construction_jobs_df.to_csv("./data/construction_jobs_data.csv")
-mortgage_rate_df.to_csv("./data/mortgage_rate_data.csv")
-retail_df.to_csv("./data/retail_sales_data.csv")
-T10Y2Y_df.to_csv("./data/T10Y2Y_data.csv")
-T10YFF_df.to_csv("./data/T10YFF_data.csv")
-post_norm_stock_data.to_csv("./data/Post_Norm_Model_Data.csv")
-pre_norm_stock_data.to_csv("./data/Pre_Norm_Model_Data.csv")
+cpi_df.to_csv("./data/monetary_policy/cpi_data.csv")
+interest_df.to_csv("./data/monetary_policy/interest_rate_data.csv")
+unemployment_df.to_csv("./data/monetary_policy/unemployment_data.csv")
+initial_claims_df.to_csv("./data/monetary_policy/initial_claims_data.csv")
+construction_jobs_df.to_csv("./data/monetary_policy/construction_jobs_data.csv")
+mortgage_rate_df.to_csv("./data/monetary_policy/mortgage_rate_data.csv")
+retail_df.to_csv("./data/monetary_policy/retail_sales_data.csv")
+T10Y2Y_df.to_csv("./data/monetary_policy/T10Y2Y_data.csv")
+T10YFF_df.to_csv("./data/monetary_policy/T10YFF_data.csv")
+post_norm_stock_data.to_csv("./data/model_data/Post_Norm_Model_Data.csv")
+pre_norm_stock_data.to_csv("./data/model_data/Pre_Norm_Model_Data.csv")
 
 

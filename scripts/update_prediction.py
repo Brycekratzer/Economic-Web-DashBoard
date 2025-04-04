@@ -13,7 +13,7 @@ def norm_data_st(norm_df, df, col, window_size=90):
     for i in range(window_size, len(norm_df)):
         # Grabs data from past
         time_window = df.iloc[i - window_size:i]
-        print(time_window['Date'])
+
 
         # Grab current time
         current_time = norm_df.iloc[i:i+1]
@@ -26,6 +26,17 @@ def norm_data_st(norm_df, df, col, window_size=90):
         denomralized_values = robust_scaler.inverse_transform(current_time[col])
         denorm_df.loc[norm_df.index[i], col] = denomralized_values[0]
     return denorm_df
+
+# Function to advance date to next business day
+def next_business_day(date):
+    # Add one day initially
+    next_date = date + timedelta(days=1)
+    
+    # Keep adding days until we reach a weekday (Monday-Friday)
+    while next_date.weekday() >= 5:  # 5 is Saturday, 6 is Sunday
+        next_date = next_date + timedelta(days=1)
+        
+    return next_date
 
 # Used for denormalizing data
 WINDOW_SIZE = int(365 * 1.5)
@@ -42,7 +53,7 @@ PATCH_STRD = 10
 # How many days to predict into the future
 PRED_LEN = 3 # Three Day Prediction
 # For past predictions
-PRIOR_DAYS = 50
+PRIOR_DAYS = 40
 
 ft_config = PatchTSTConfig(
     num_input_channels = NUM_INPUT,
@@ -60,10 +71,9 @@ ft_model = PatchTSTForPrediction(ft_config)
 # Load in our model
 state_dict = torch.load('./model/pt_v2_ft_v1_model.bin', map_location=torch.device('cpu'))
 ft_model.load_state_dict(state_dict)
-ft_model.eval()
 
 # Get the normalized economic data
-pred_and_original_data = pd.read_csv('./data/Post_Norm_Model_Data.csv')
+pred_and_original_data = pd.read_csv('./data/model_data/Post_Norm_Model_Data.csv')
 
 # Filter out data to only contain features needed and Date for merging
 pred_and_original_data = pred_and_original_data[['Date']+features_to_pred]
@@ -76,6 +86,8 @@ NUM_ITER = 10
 
 # Autoregression
 for day in range(NUM_ITER):
+    
+    ft_model.eval()
     
     # Drop the date for prediction
     df_copy = pred_and_original_data.drop(['Date'], axis=1)
@@ -103,24 +115,36 @@ for day in range(NUM_ITER):
     pred_np = predictions
     pred_np_50 = predictions_50
     
-    # Get the last date in the dataset
-    last_date = pd.to_datetime(pred_and_original_data['Date'])
-    last_date = last_date[len(pred_and_original_data) - 1]
-    
-    last_date_50 = pd.to_datetime(pred_and_original_data_50_prior['Date'])
-    last_date_50 = last_date_50[len(pred_and_original_data_50_prior) - 1]
+    # Get the last dates in the datasets
+    last_date = pd.to_datetime(pred_and_original_data['Date']).iloc[-1]
+    last_date_50 = pd.to_datetime(pred_and_original_data_50_prior['Date']).iloc[-1]
+
+    # Get the next business day after the last date
+    next_date = next_business_day(last_date)
+    next_date_50 = next_business_day(last_date_50)
+
+    if last_date.weekday() >= 5:
+        last_date = last_date + timedelta(days=1)
+        if last_date.weekday >= 5:
+            last_date = last_date + timedelta(days=1)
+            
+    if last_date_50.weekday() >= 5:
+        last_date_50 = last_date_50 + timedelta(days=1)
+        if last_date_50.weekday >= 5:
+            last_date_50 = last_date_50 + timedelta(days=1)
 
     # Create date range for predictions
     future_dates = pd.date_range(
         start=last_date + timedelta(days=1),
         periods=PRED_LEN,
-        freq='D'
+        freq='B'
     )
+    
     
     future_dates_50 = pd.date_range(
         start=last_date_50 + timedelta(days=1),
         periods=PRED_LEN,
-        freq='D'
+        freq='B'
     )
     
     # Create a dataframe of our predictions with their corresponding dates
@@ -138,7 +162,7 @@ for day in range(NUM_ITER):
     pred_and_original_data_50_prior['Date'] = pd.to_datetime(pred_and_original_data_50_prior['Date'])
     
 # Load in unnormalized data and format to match features we are predicting
-original_df = pd.read_csv('./data/Pre_Norm_Model_Data.csv')
+original_df = pd.read_csv('./data/model_data/Pre_Norm_Model_Data.csv')
 original_df_50 = original_df[0:len(original_df) - PRIOR_DAYS]
 
 original_df = original_df[['Date'] + features_to_pred]
@@ -151,15 +175,19 @@ original_df_50['Date'] = pd.to_datetime(original_df_50['Date'])
 columns_to_unnormalize = pred_and_original_data.drop(['Date'], axis=1).columns
 unnorm_df = norm_data_st(pred_and_original_data, original_df, columns_to_unnormalize,WINDOW_SIZE)    
 
-filtered_start = int(len(unnorm_df) * .90)
-    
-unnorm_df[filtered_start:len(unnorm_df) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks.csv')
-unnorm_df[len(unnorm_df) - NUM_ITER*PRED_LEN:len(unnorm_df)].to_csv('./data/prediction_stocks.csv')
+# Filter for when to start data for visual
+filtered_start = int(len(unnorm_df) * .93)
+
+# Exporting predictions
+unnorm_df[filtered_start:len(unnorm_df) - NUM_ITER*PRED_LEN].to_csv('./data/model_projections/pre_prediction_stocks.csv')
+unnorm_df[len(unnorm_df) - NUM_ITER*PRED_LEN:len(unnorm_df)].to_csv('./data/model_projections/prediction_stocks.csv')
 
 columns_to_unnormalize_50 = pred_and_original_data_50_prior.drop(['Date'], axis=1).columns
 unnorm_df_50 = norm_data_st(pred_and_original_data_50_prior, original_df_50, columns_to_unnormalize,WINDOW_SIZE)    
 
-filtered_start_50 = int(len(unnorm_df_50) * .90)
+filtered_start_50 = int(len(unnorm_df_50) * .93)
     
-unnorm_df_50[filtered_start_50:len(unnorm_df_50) - NUM_ITER*PRED_LEN].to_csv('./data/pre_prediction_stocks_50_prior.csv')
-unnorm_df_50[len(unnorm_df_50) - NUM_ITER*PRED_LEN:len(unnorm_df_50)].to_csv('./data/prediction_stocks_50_prior.csv')
+unnorm_df_50[filtered_start_50:len(unnorm_df_50) - NUM_ITER*PRED_LEN].to_csv('./data/model_projections/pre_prediction_stocks_50_prior.csv')
+original_df[len(original_df_50):len(original_df_50) + (NUM_ITER * PRED_LEN)].to_csv('./data/model_projections/actual_stock_50_prior.csv')
+
+unnorm_df_50[len(unnorm_df_50) - NUM_ITER*PRED_LEN:len(unnorm_df_50)].to_csv('./data/model_projections/prediction_stocks_50_prior.csv')

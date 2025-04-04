@@ -299,7 +299,7 @@ function createViz(svg, data, config){
  * @param {Array} predictionData - Predicted stock data
  * @param {Object} config - Configuration object for the visualization
  */
-function createCombinedStockViz(svg, actualData, predictionData, config){
+function createCombinedStockViz(svg, actualData, predictionData, futureData, config){
 
     // Actual Data to show
     actualData.forEach(function(d) {
@@ -313,8 +313,19 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         d[config.key] = +d[config.key];
     });
 
+    // If we are doing past predictions 
+    if (futureData){
+        futureData.forEach(function(d) {
+            d.Date = new Date(d.Date);
+            d[config.key] = +d[config.key];
+        });
+    }
+
     // Combining Data for domain calculations
     const allData = actualData.concat(predictionData);
+    if (futureData) {
+        allData.push(...futureData);
+    }
 
     // Create scales for x and y feats
     const xScale = d3.scaleTime()
@@ -385,6 +396,16 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         .attr("stroke-dasharray", "5,5")
         .attr("fill", "none");
 
+    // Draw actual data line with different color (new)
+    if (futureData && futureData.length > 0) {
+        svg.append("path")
+            .datum(futureData)
+            .attr("d", createLine)
+            .style("stroke", "#e41a1c") // Red color for actual data
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+    }
+
 
     // This adds a connecting line from end of the actual values to the 
     // Start of the predicited values
@@ -419,7 +440,7 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
         .style("cursor", "pointer")
         .on("mouseover touchstart", function(event, d) {
             // Format date for display
-            const formattedDate = d3.timeFormat("%b, %Y")(d.Date);
+            const formattedDate = d3.timeFormat("%b %d, %Y")(d.Date);
             // Format value based on data type
             const formattedValue = d[config.key].toFixed(2);
             
@@ -446,7 +467,7 @@ function createCombinedStockViz(svg, actualData, predictionData, config){
  * create a graph based on the configurations passed
  */
 
-d3.csv("./data/SP120_day.csv")
+d3.csv("./data/stock_momentum/SP120_day.csv")
   .then(function(data) {
 
     createViz(svg500_120, data, {
@@ -462,7 +483,7 @@ d3.csv("./data/SP120_day.csv")
     console.log(error);
 });
 
-d3.csv("./data/SP50_day.csv")
+d3.csv("./data/stock_momentum/SP50_day.csv")
   .then(function(data) {
 
     createViz(svg500_50, data, {
@@ -478,7 +499,7 @@ d3.csv("./data/SP50_day.csv")
     console.log(error);
 });
 
-d3.csv("./data/T10Y2Y_data.csv")
+d3.csv("./data/monetary_policy/T10Y2Y_data.csv")
   .then(function(data) {
 
     createViz(svgT10Y2Y, data, {
@@ -489,7 +510,7 @@ d3.csv("./data/T10Y2Y_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/T10YFF_data.csv")
+d3.csv("./data/monetary_policy/T10YFF_data.csv")
   .then(function(data) {
 
     createViz(svgT10YFF, data, {
@@ -501,7 +522,7 @@ d3.csv("./data/T10YFF_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/interest_rate_data.csv")
+d3.csv("./data/monetary_policy/interest_rate_data.csv")
   .then(function(data) {
 
     createViz(svgInterestRates, data, {
@@ -513,7 +534,7 @@ d3.csv("./data/interest_rate_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/mortgage_rate_data.csv")
+d3.csv("./data/monetary_policy/mortgage_rate_data.csv")
   .then(function(data) {
     createViz(svgMortgageRates, data, {
         key: "MORTGAGE30US",
@@ -524,7 +545,7 @@ d3.csv("./data/mortgage_rate_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/initial_claims_data.csv")
+d3.csv("./data/monetary_policy/initial_claims_data.csv")
   .then(function(data) {
     createViz(svgInitialClaims, data, {
         key: "ICSA",
@@ -535,7 +556,7 @@ d3.csv("./data/initial_claims_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/retail_sales_data.csv")
+d3.csv("./data/monetary_policy/retail_sales_data.csv")
   .then(function(data) {
     createViz(svgRetailSales, data, {
         key: "RSAFS",
@@ -546,7 +567,7 @@ d3.csv("./data/retail_sales_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/unemployment_data.csv")
+d3.csv("./data/monetary_policy/unemployment_data.csv")
   .then(function(data) {
     createViz(svgUnRate, data, {
         key: "UNRATE",
@@ -557,7 +578,7 @@ d3.csv("./data/unemployment_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/construction_jobs_data.csv")
+d3.csv("./data/monetary_policy/construction_jobs_data.csv")
   .then(function(data) {
     createViz(svgConstRate, data, {
         key: "JTS2300JOL",
@@ -568,7 +589,7 @@ d3.csv("./data/construction_jobs_data.csv")
     console.log(error);
 });
 
-d3.csv("./data/cpi_data.csv")
+d3.csv("./data/monetary_policy/cpi_data.csv")
   .then(function(data) {
     createViz(svgCPI, data, {
         key: "CPIAUCSL",
@@ -581,20 +602,20 @@ d3.csv("./data/cpi_data.csv")
 
 // Display stock data
 Promise.all([
-    d3.csv("./data/pre_prediction_stocks.csv"),
-    d3.csv("./data/prediction_stocks.csv")
+    d3.csv("./data/model_projections/pre_prediction_stocks.csv"),
+    d3.csv("./data/model_projections/prediction_stocks.csv")
 ]).then(function(data) {
     const actualDataSP = data[0];
     const predictionDataSP = data[1];
 
-    createCombinedStockViz(svgSPprediction, actualDataSP, predictionDataSP, {
+    createCombinedStockViz(svgSPprediction, actualDataSP, predictionDataSP, null, {
         key: "^GSPC Close",
         yAxisLabel: "S&P 500 Value"
     });
 
     const actualDataDJ = data[0];
     const predictionDataDJ = data[1]; 
-    createCombinedStockViz(svgDJprediction, actualDataDJ, predictionDataDJ, {
+    createCombinedStockViz(svgDJprediction, actualDataDJ, predictionDataDJ, null, {
         key: "^DJI Close",
         yAxisLabel: "Dow Jones Value"
     });
@@ -606,21 +627,23 @@ Promise.all([
 
 // Display stock data
 Promise.all([
-    d3.csv("./data/pre_prediction_stocks_50_prior.csv"),
-    d3.csv("./data/prediction_stocks_50_prior.csv")
+    d3.csv("./data/model_projections/pre_prediction_stocks_50_prior.csv"),
+    d3.csv("./data/model_projections/prediction_stocks_50_prior.csv"),
+    d3.csv("./data/model_projections/actual_stock_50_prior.csv")
 ]).then(function(data) {
     const actualDataSP = data[0];
     const predictionDataSP = data[1];
+    const predictionActualSP = data[2];
 
-    createCombinedStockViz(svgSPprediction50, actualDataSP, predictionDataSP, {
+    createCombinedStockViz(svgSPprediction50, actualDataSP, predictionDataSP, predictionActualSP, {
         key: "^GSPC Close",
         yAxisLabel: "S&P 500 Value"
     });
 
     const actualDataDJ = data[0];
     const predictionDataDJ = data[1]; 
-    const futureDataDJ = data[2];
-    createCombinedStockViz(svgDJprediction50, actualDataDJ, predictionDataDJ, {
+    const predictionActualDJ = data[2];
+    createCombinedStockViz(svgDJprediction50, actualDataDJ, predictionDataDJ, predictionActualDJ, {
         key: "^DJI Close",
         yAxisLabel: "Dow Jones Value"
     });
