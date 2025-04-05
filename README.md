@@ -1,99 +1,121 @@
 # Economic Dashboard
 
-A data-driven web application that visualizes the current state of the United States economy using FRED (Federal Reserve Economic Data) and Yahoo Finance data. The dashboard provides an intuitive interface to track market trends, economic indicators, and financial metrics.
+A data-driven web application that visualizes the current state of the United States economy using FRED (Federal Reserve Economic Data) and Yahoo Finance data. The dashboard offers an intuitive interface to track market trends, economic indicators, and financial metrics while providing machine learning-based stock market projections.
 
-## Features 
+## Key Features
 
-- **Automateed Data Pipiline** 
+### Predictive Analytics
+At the core of this dashboard is the forecasting capability powered by the [PatchTST](https://github.com/yuqinie98/PatchTST) (Patch Time Series Transformer) model. The system provides short-term projections for the S&P 500 and Dow Jones indices by analyzing complex relationships between multiple economic factors. The dashboard displays both current predictions and historical forecast accuracy to demonstrate model performance.
 
-    Fetches and processes financial data from trusted sources on a regular schedule
+### Automated Data Pipeline
+The application maintains data freshness through a fully automated pipeline that:
+- Fetches data from authoritative financial sources every other day
+- Processes and normalizes time series data using statistical methods
+- Applies inflation adjustments for accurate historical comparisons
+- Updates visualizations and model predictions automatically
 
-- **Responsive Design** 
+### Interactive Visualizations
+All economic indicators and predictions are presented through interactive D3.js visualizations that allow users to:
+- Examine stock market momentum over 50-day and 120-day periods
+- Monitor critical economic indicators including yield curves, interest rates, and employment metrics
+- Compare model predictions with actual market performance
 
-    Optimized for both desktop and mobile viewing
+## Technology Stack
 
-## Technology Used
+### Frontend
+- **Languages**: HTML5, CSS3, JavaScript
+- **Visualization Library**: D3.js
+- **Responsive Design**: Custom CSS implementation for multi-device compatibility
 
-- **Frontend**
+### Backend & Data Processing
+- **Languages**: Python 3
+- **Data Processing**: pandas, pandas_ta, NumPy
+- **Machine Learning**: PyTorch, Hugging Face Transformers, scikit-learn
+- **Data Sources**: Yahoo Finance API (yfinance), Federal Reserve Economic Database (FRED) via pandas_datareader
 
-    HTML, CSS, JavaScript
+### Machine Learning
+- **Architecture**: PatchTST (Patch Time Series Transformer)
+- **Training Approach**: Pretrained on historical economic data (1994-2025), fine-tuned for financial forecasting
+- **Prediction Horizon**: 3-day forecasts with autoregressive capabilities
 
-- **Data Visualization**
+### Deployment & DevOps
+- **Hosting**: GitHub Pages
+- **Automation**: GitHub Actions for scheduled data retrieval and model inference
+- **Version Control**: Git
 
-    D3.js
+## Data Pipeline Architecture
 
-- **Data Processing**
+### Collection
+The system collects comprehensive financial and economic data through `update_data.py`, including:
 
-    Python, pandas, pandas_ta, Scikit-Learn
+- **Stock Market Indices**: S&P 500, Dow Jones Industrial Average, NASDAQ (Open, High, Low, Close, Volume)
+- **Economic Indicators**: 
+  - Inflation metrics (CPI)
+  - Interest rates (Federal Funds Rate, Treasury yields, mortgage rates)
+  - Employment metrics (Unemployment rate, job openings, initial claims)
+  - Economic activity indicators (GDP, retail sales, industrial production)
+  - Consumer metrics (Personal income, consumer debt, saving rates)
 
-- **Data Sources**
+### Processing
+The pipeline applies sophisticated data processing techniques:
+1. **Missing Value Handling**: Forward-fill methodology for consistent time series
+2. **Inflation Adjustment**: CPI-based normalization to ensure value comparability across time
+3. **Time Series Normalization**: Rolling window RobustScaler implementation to handle outliers and maintain temporal context
+4. **Feature Engineering**: Calculation of momentum indicators and economic relationships
 
-    Yahoo Finance (yfinance), FRED (pandas_datareader)
+### Modeling
+The PatchTST model implementation includes:
+1. **Pretraining**: Masked modeling on full economic dataset
+2. **Fine-tuning**: Optimization for S&P 500 and Dow Jones prediction
+3. **Inference**: Autoregressive prediction with 3-day horizon
+4. **Validation**: Historical prediction comparison with actual values
 
-- **Model Development**
+## Visualization Framework
 
-  Huggingface (transformers), PyTorch, Scikit-Learn
+The dashboard presents data through a structured D3.js implementation that:
+1. Loads processed CSV data from the data directory
+2. Creates responsive line charts with adaptive scales
+3. Implements interactive features including tooltips for detailed data points
+4. Presents model predictions alongside historical data for context
 
-- **Deployment and Automation**
+The clean, minimalist UI design emphasizes data clarity while maintaining accessibility across device types.
 
-    Github Pages, Github Actions
+## Disclaimer
 
-## Data Pipieline
-
-1. **Data Collection**
-
-    The system uses Python to fetch data from:
-
-    - Yahoo Finance for stock market indices (S&P 500)
-    - FRED API for economic indicators
-
-2. **Data Processing**
-
-    - update_data.py retrieves 50-day and 120-day historical data
-    - Data is formatted and saved as CSV files in the `/data` directory
-
-3. **Automated Updates**
-
-    - GitHub Actions runs the data pipeline at 5:30 PM MST every weekday
-    - Fresh data is committed back to the repository
-
-## Visualization
-
-1. **DS.js Rendering**
-
-    - `display.js` loads the CSV data
-    - Creates line charts with appropriate scales
-    - Formats dates and values for clean presentation
-
-2. **User Interface**
-
-    - Clean, minimalist design implemented with custom CSS
-    - Responsive layout adapts to different screen sizes
+The projections provided are intended for educational purposes, speculation, and curiosity only, and SHOULD NOT be used as investing advice. Like all predictive models, it has inherent limitations and cannot account for unexpected market events or sentiment shifts. Past performance does not guarantee future results, and users should always consult with qualified financial professionals before making investment decisions.
 
 ## File Structure
 
 ```
 ├── .github/
 │   └── workflows/
-│       ├── static.yml                            # For pushing updates
-│       └── update-data.yml                       # Data processing workflow & Dependency's
-├── static/
-│   ├── display.js                                # D3.js visualizations
-│   └── styles.css                                # Dashboard styling
-│       
-├── scripts/
-│   ├── update_pred.py                            # Python script to update model predictions
-│   └── update_data.py                            # Python script to process financial data
+│       ├── static.yml                  # GitHub Pages deployment workflow
+│       └── update-data.yml             # Data processing automation (runs every other day)
 │
-│        
-├── data/                                         # Folder where processed CSV data will be stored
-│   └── data_example.csv                          # Generated by script
-│ 
-├── model/                                        # Folder where model will development will be
-│   └── Generate_Historical_Data.ipynb            # Preprocessing Large Scale Data
-│ 
-├── index.html                                    # Main dashboard page
-└── requirements.txt                              # Python dependencies
+├── static/                             # Frontend assets (corrected location)
+│   ├── display.js                      # D3.js visualizations
+│   └── styles.css                      # Dashboard styling
+│
+├── scripts/
+│   ├── update_prediction.py            # Model inference script for stock predictions
+│   └── update_data.py                  # Data collection from FRED and Yahoo Finance
+│
+├── data/                               # Processed data storage
+│   ├── monetary_policy/                # Economic indicators
+│   ├── stock_momentum/                 # Stock momentum metrics
+│   ├── model_projections/              # Data for display.js visualizations 
+│   └── model_data/                     # Data for model input/output
+│      ├── Pre_Norm_Model_Data.csv      # Raw data
+│      └── Post_Norm_Model_Data.csv     # Normalized data
+│
+├── model/                              # ML model development
+│   ├── PatchTST.ipynb                  # Model training notebook
+│   ├── Gather_Historical_Data.ipynb    # Data preprocessing for training
+│   ├── past_models/                    # Models that were used previously, stored for reference
+│   └── pretrained_models/              # Saved model weights
+│
+├── index.html                          # Main dashboard page
+└── requirements.txt                    # Python dependencies
 ```
 
 ## Updates 
