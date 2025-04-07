@@ -79,7 +79,7 @@ h2, h3, h4 {
 #viz9, #viz10, #viz11, #viz12,
 #viz13, #viz14, #viz15 {
     margin: 0 0 0 0 0.625rem;
-    flex: 0 0 23rem;
+    flex: 0 0 20rem;
     width: 10rem;
     background-color: var(--white);
     padding: 0.9375rem;
