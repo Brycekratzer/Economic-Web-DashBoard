@@ -70,6 +70,20 @@ The PatchTST model implementation includes:
 3. **Inference**: Autoregressive prediction with 3-day horizon
 4. **Validation**: Historical prediction comparison with actual values
 
+#### Model Naming
+In the model directory we store current models in use for development with the following naming convertions:
+
+    pt_1*5yn_v1_ft_3d_v1
+
+- **pt**    - Pretraining Model
+- **1*5yn** - 1.5 Years normalized data
+- **v1**    - Version 1 of this model
+- **ft**    - Fine-Tuned version of this pretrained model
+- **3d**    - How far this model predicts in the future
+- **v1**    - Version 1 of this model
+
+
+
 ## Visualization Framework
 
 The dashboard presents data through a structured D3.js implementation that:

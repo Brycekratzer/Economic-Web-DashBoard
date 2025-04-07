@@ -41,15 +41,15 @@ def next_business_day(date):
 # Used for denormalizing data
 WINDOW_SIZE = int(365 * 1.5)
 # How many features we are including 
-NUM_INPUT = 2
+NUM_INPUT = 4
 # For What we are predicting
-NUM_TARGET = 2
+NUM_TARGET = 4
 # How many steps we take in the context length
-CONTEXT_LEN = 120
+CONTEXT_LEN = 150
 # How many steps we take in the context length
-PATCH_LEN = 20
+PATCH_LEN = 10
 # How far we move our patch length
-PATCH_STRD = 10
+PATCH_STRD = 5
 # How many days to predict into the future
 PRED_LEN = 3 # Three Day Prediction
 # For past predictions
@@ -60,16 +60,16 @@ ft_config = PatchTSTConfig(
     num_targets = NUM_TARGET,
     context_length = CONTEXT_LEN,
     patch_length = PATCH_LEN,
-    stride = PATCH_STRD,
+    patch_stride = PATCH_STRD,
     prediction_length=PRED_LEN
 )
 
-features_to_pred = ['^GSPC Close', '^DJI Close']
+features_to_pred = ['^GSPC Close', '^DJI Close', 'ES=F Close', 'YM=F Close']
 
 ft_model = PatchTSTForPrediction(ft_config)
 
 # Load in our model
-state_dict = torch.load('./model/pt_v2_ft_v1_model.bin', map_location=torch.device('cpu'))
+state_dict = torch.load('./model/pt_1*5yn_v1_ft_3d_v1.bin', map_location=torch.device('cpu'))
 ft_model.load_state_dict(state_dict)
 
 # Get the normalized economic data

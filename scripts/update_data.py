@@ -14,10 +14,14 @@ from sklearn.preprocessing import RobustScaler
 # Variables from FRED and yfinance to gather data
 #
 
-CONTEXT_LEN = 120
+CONTEXT_LEN = 150
 WINDOW_SIZE = int(365 * 1.5)
 sp_ticker = '^GSPC'
 dj_ticker = '^DJI'
+
+spf_ticker = 'ES=F'
+djf_ticker = 'YM=F'
+
 cpi_code = 'CPIAUCSL'
 interest_rate_code = 'DFF'
 unempl_rates = 'UNRATE'
@@ -190,6 +194,8 @@ CPI_2025 = CPI_yearly_amount[CPI_yearly_amount['Date'] == 2025][cpi_code].values
 # Get Data for model
 SP_data = get_stock_data(sp_ticker, previous_120_days, today)
 DJ_data = get_stock_data(dj_ticker, previous_120_days, today)
+SPF_data = get_stock_data(spf_ticker, previous_120_days, today)
+DJF_data = get_stock_data(djf_ticker, previous_120_days, today)
 
 # Gather Data For model
 combined_df = pd.DataFrame()
@@ -198,13 +204,15 @@ combined_df['Date'] = SP_data['Date']
 # Adding Stock Markets
 combined_df[f'{sp_ticker} Close'] = add_data_based_on_date(combined_df, SP_data, f'{sp_ticker} Close')
 combined_df[f'{dj_ticker} Close'] = add_data_based_on_date(combined_df, DJ_data, f'{dj_ticker} Close')
-combined_df = adjust_for_inflation(combined_df, [f'{sp_ticker} Close', f'{dj_ticker} Close'], CPI_yearly_amount, CPI_2025)
+combined_df[f'{spf_ticker} Close'] = add_data_based_on_date(combined_df, SPF_data, f'{spf_ticker} Close')
+combined_df[f'{djf_ticker} Close'] = add_data_based_on_date(combined_df, DJF_data, f'{djf_ticker} Close')
+combined_df = adjust_for_inflation(combined_df, [f'{sp_ticker} Close', f'{dj_ticker} Close', f'{djf_ticker} Close', f'{spf_ticker} Close'], CPI_yearly_amount, CPI_2025)
 
 # For denormilzation of data after prediction
 pre_norm_stock_data = combined_df.copy()
 
 # Normalize data for model
-post_norm_stock_data = norm_data_st(combined_df, [f'{sp_ticker} Close', f'{dj_ticker} Close'], WINDOW_SIZE)
+post_norm_stock_data = norm_data_st(combined_df, [f'{sp_ticker} Close', f'{dj_ticker} Close', f'{djf_ticker} Close', f'{spf_ticker} Close'], WINDOW_SIZE)
 
 SP500_50day_momentum = get_momentum(SP500_365_Day, 'Close', 'Date', num_rows=50)
 SP500_120day_momentum = get_momentum(SP500_365_Day, 'Close', 'Date', num_rows=120)
