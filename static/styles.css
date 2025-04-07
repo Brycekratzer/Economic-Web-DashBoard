@@ -124,6 +124,16 @@ path {
     fill: var(--mission-blue);
 }
 
+.grid line {
+    stroke: var(--light-gray);
+    stroke-opacity: 1;
+    shape-rendering: crispEdges;
+  }
+  
+.grid path {
+    stroke-width: 0;
+}
+
 footer {
     display: flex;
     justify-content: center;

@@ -251,6 +251,25 @@ function createViz(svg, data, config){
         .attr("x", -(height/2))
         .text(config.yAxisLabel);
 
+    // Add X gridlines
+    svg.append("g")
+    .attr("class", "grid")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(xScale)
+            .ticks(d3.timeMonth.every(2))
+            .tickFormat("")
+            .tickSize(-height))
+    .call(g => g.select(".domain").remove());
+
+    // Add Y gridlines
+    svg.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(yScale)
+            .ticks(4)
+            .tickFormat("")
+            .tickSize(-width))
+    .call(g => g.select(".domain").remove());
+
     // Create line
     const lineGraph = d3.line()
         .x(d => xScale(d.Date))
@@ -373,6 +392,25 @@ function createCombinedStockViz(svg, actualData, predictionData, futureData, con
         .attr("y", -margin.left + 8)
         .attr("x", -(height/2))
         .text(config.yAxisLabel);
+
+    // Add X gridlines
+    svg.append("g")
+        .attr("class", "grid")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale)
+                .ticks(d3.timeDay.every(11))
+                .tickFormat("")
+                .tickSize(-height))
+        .call(g => g.select(".domain").remove());
+    
+    // Add Y gridlines
+    svg.append("g")
+        .attr("class", "grid")
+        .call(d3.axisLeft(yScale)
+                .ticks(4)
+                .tickFormat("")
+                .tickSize(-width))
+        .call(g => g.select(".domain").remove());
 
     // Create line generators
     const createLine = d3.line()
