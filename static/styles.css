@@ -58,10 +58,10 @@ h2, h3, h4 {
 .graph-container {
     display: flex;
     overflow-x: scroll;
-    gap: .02rem;
+    gap: 1rem;
     text-align: center;
     background-color: var(--light-gray);
-    padding: .25rem;
+    padding: 1rem;
     border-radius: 40px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
@@ -74,15 +74,19 @@ h2, h3, h4 {
 #viz5, #viz6, #viz7, #viz8,
 #viz9, #viz10, #viz11, #viz12,
 #viz13, #viz14, #viz15 {
-    margin-left: 40px;
     flex: 0 1 400px;
     width: 400px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
     background-color: var(--white);
     padding: 15px 15px 15px 15px;
     border-radius: 40px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     flex-direction: column;
     scroll-snap-align: center;
+    height: fit-content;
 }
 
 /* Header for Visuals */
