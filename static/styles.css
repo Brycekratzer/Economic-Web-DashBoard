@@ -10,9 +10,8 @@
 
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
+  
 
 /* Basic outline for CSS */
 body {
@@ -20,30 +19,30 @@ body {
     font-weight: 400;
     line-height: 1.6;
     background-color: var(--gray);
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px; /* Add padding to prevent content touching edges */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 header{
     display: flex;
     justify-content: center;
-    padding: 20px 30px;
+    padding: 1.25rem 1.875rem;
     background-color: var(--white);
-    border-radius: 8px;
+    border-radius: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0.625rem;
 }
 
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 75rem;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 0 0.9375rem;
 }
 
 h1 {
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     color: var(--black);
     font-family: "Noto Sans", sans-serif;
     font-weight: 500;
@@ -51,7 +50,7 @@ h1 {
 }
 
 h2, h3, h4 {
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     color: var(--black);
     font-family: "Noto Sans", sans-serif;
     font-weight: 300;
@@ -63,12 +62,13 @@ h2, h3, h4 {
 .graph-container {
     display: flex;
     overflow-x: auto;
-    gap: 20px;
+    gap: 1.25rem;
     text-align: center;
     background-color: var(--light-gray);
-    padding: 25px 20px;
-    border-radius: 40px;
+    padding: 1.5625rem 1.25rem;
+    border-radius: 2.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
@@ -78,24 +78,21 @@ h2, h3, h4 {
 #viz5, #viz6, #viz7, #viz8,
 #viz9, #viz10, #viz11, #viz12,
 #viz13, #viz14, #viz15 {
-    margin-left: 40px;
-    flex: 0 0 400px;
-    width: 400px;
+    margin: 0 0 0 0 0.625rem;
+    flex: 0 0 25rem;
+    width: 25rem;
     background-color: var(--white);
-    padding: 15px 15px 15px 15px;
-    border-radius: 40px;
+    padding: 0.9375rem;
+    border-radius: 2.5rem;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     flex-direction: column;
-    margin-left: 0;
-    padding: 15px;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
 }
 
 /* Header for Visuals */
 .viz-header{
     text-align: center;
-    margin-top: 20px;
+    margin-top: 1.25rem;
     width: 100%; 
     font-family: "Noto Sans", sans-serif;
     font-weight: 300;
@@ -104,13 +101,13 @@ h2, h3, h4 {
 .viz-desription{
     display: flex;
     justify-content: center;
-    padding: 20px 30px;
+    padding: 1.25rem 1.875rem;
     background-color: var(--mission-blue);
     font-size: .8rem;
     color: var(--white);
-    border-radius: 8px;
+    border-radius: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
+    margin-top: 1.875rem;
 }
 
 /* For Graph Lines */
@@ -129,9 +126,10 @@ path {
 footer {
     display: flex;
     justify-content: center;
-    padding: 20px 30px;
+    padding: 1.25rem 1.875rem;
     background-color: var(--white);
-    border-radius: 8px;
+    border-radius: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 400px;
+    margin-top: 25rem;
 }
+
