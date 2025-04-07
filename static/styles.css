@@ -19,30 +19,26 @@ body {
     font-weight: 400;
     line-height: 1.6;
     background-color: var(--gray);
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
 }
 
 header{
     display: flex;
     justify-content: center;
-    padding: 1.25rem 1.875rem;
+    padding: 20px 30px;
     background-color: var(--white);
-    border-radius: 0.5rem;
+    border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 0.625rem;
 }
 
 .container {
     width: 100%;
-    max-width: 75rem;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 0.9375rem;
+    padding: 0;
 }
 
 h1 {
-    margin-bottom: 1.25rem;
+    margin-bottom: 20px;
     color: var(--black);
     font-family: "Noto Sans", sans-serif;
     font-weight: 500;
@@ -50,7 +46,7 @@ h1 {
 }
 
 h2, h3, h4 {
-    margin-bottom: 1.25rem;
+    margin-bottom: 20px;
     color: var(--black);
     font-family: "Noto Sans", sans-serif;
     font-weight: 300;
@@ -61,15 +57,15 @@ h2, h3, h4 {
 /* Graph Containers*/
 .graph-container {
     display: flex;
-    overflow-x: auto;
-    gap: 1.25rem;
+    overflow-x: scroll;
+    gap: .02rem;
     text-align: center;
     background-color: var(--light-gray);
-    padding: 1.5625rem 1.25rem;
-    border-radius: 2.5rem;
+    padding: .25rem;
+    border-radius: 40px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -78,36 +74,37 @@ h2, h3, h4 {
 #viz5, #viz6, #viz7, #viz8,
 #viz9, #viz10, #viz11, #viz12,
 #viz13, #viz14, #viz15 {
-    margin: 0 0 0 0 0.625rem;
-    flex: 0 1 20rem;
-    width: 100%;
+    margin-left: 40px;
+    flex: 0 1 400px;
+    width: 400px;
     background-color: var(--white);
-    padding: 0.9375rem;
-    border-radius: 2.5rem;
+    padding: 15px 15px 15px 15px;
+    border-radius: 40px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     flex-direction: column;
-    scroll-snap-align: start;
+    scroll-snap-align: center;
 }
 
 /* Header for Visuals */
 .viz-header{
     text-align: center;
-    margin-top: 1.25rem;
+    margin-top: 20px;
     width: 100%; 
     font-family: "Noto Sans", sans-serif;
     font-weight: 300;
+    font-size: .95rem;
 }
 
 .viz-desription{
     display: flex;
     justify-content: center;
-    padding: 1.25rem 1.875rem;
+    padding: 20px 30px;
     background-color: var(--mission-blue);
     font-size: .8rem;
     color: var(--white);
-    border-radius: 0.5rem;
+    border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 1.875rem;
+    margin-top: 30px;
 }
 
 /* For Graph Lines */
@@ -126,10 +123,9 @@ path {
 footer {
     display: flex;
     justify-content: center;
-    padding: 1.25rem 1.875rem;
+    padding: 20px 30px;
     background-color: var(--white);
-    border-radius: 0.5rem;
+    border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 25rem;
+    margin-top: 400px;
 }
-
