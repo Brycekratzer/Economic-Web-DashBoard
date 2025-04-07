@@ -360,7 +360,7 @@ function createCombinedStockViz(svg, actualData, predictionData, futureData, con
 
     // Create labels for x and y features
     const xAxis = d3.axisBottom(xScale)
-        .ticks(d3.timeMonth.every(2))
+        .ticks(d3.timeMonth.every(1))
         .tickFormat(date => {
             return d3.timeFormat("%b")(date); 
         });
