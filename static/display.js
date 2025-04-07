@@ -459,6 +459,24 @@ function createCombinedStockViz(svg, actualData, predictionData, futureData, con
                 .style("opacity", 0);
         });
 
+        // This adds a connecting line from end of the actual values to the 
+        // Start of the predicited values for the future Data
+        if (futureData != null && actualData.length > 0 && futureData.length > 0) {
+            // Get the last point of actual data and first point of prediction data
+            const lastActualPoint = actualData[actualData.length - 1];
+            const firstPredictionPoint = futureData[0];
+            
+            // Create a connector path with just these two points
+            const connectorData = [lastActualPoint, firstPredictionPoint];
+            
+            // Draw the connector line with dotted style
+            svg.append("path")
+                .datum(connectorData)
+                .attr("d", createLine)
+                .style("stroke", "#e41a1c") // Red color for actual data
+                .attr("stroke-width", 2)
+                .attr("fill", "none");
+        }
 
 }
 
