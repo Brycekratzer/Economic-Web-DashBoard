@@ -82,7 +82,7 @@ pred_and_original_data_50_prior = pred_and_original_data[['Date']+features_to_pr
 pred_and_original_data_50_prior = pred_and_original_data_50_prior[0:len(pred_and_original_data_50_prior) - PRIOR_DAYS]
 
 # How many predictions we will recursively make
-NUM_ITER = 10
+NUM_ITER = 7
 
 # Autoregression
 for day in range(NUM_ITER):
