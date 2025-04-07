@@ -176,7 +176,7 @@ columns_to_unnormalize = pred_and_original_data.drop(['Date'], axis=1).columns
 unnorm_df = norm_data_st(pred_and_original_data, original_df, columns_to_unnormalize,WINDOW_SIZE)    
 
 # Filter for when to start data for visual
-filtered_start = int(len(unnorm_df) * .93)
+filtered_start = int(len(unnorm_df) * .95)
 
 # Exporting predictions
 unnorm_df[filtered_start:len(unnorm_df) - NUM_ITER*PRED_LEN].to_csv('./data/model_projections/pre_prediction_stocks.csv')
@@ -185,7 +185,7 @@ unnorm_df[len(unnorm_df) - NUM_ITER*PRED_LEN:len(unnorm_df)].to_csv('./data/mode
 columns_to_unnormalize_50 = pred_and_original_data_50_prior.drop(['Date'], axis=1).columns
 unnorm_df_50 = norm_data_st(pred_and_original_data_50_prior, original_df_50, columns_to_unnormalize,WINDOW_SIZE)    
 
-filtered_start_50 = int(len(unnorm_df_50) * .93)
+filtered_start_50 = int(len(unnorm_df_50) * .95)
     
 unnorm_df_50[filtered_start_50:len(unnorm_df_50) - NUM_ITER*PRED_LEN].to_csv('./data/model_projections/pre_prediction_stocks_50_prior.csv')
 original_df[len(original_df_50):len(original_df_50) + (NUM_ITER * PRED_LEN)].to_csv('./data/model_projections/actual_stock_50_prior.csv')
