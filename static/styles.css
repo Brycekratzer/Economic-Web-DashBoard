@@ -24,10 +24,18 @@ body {
 header{
     display: flex;
     justify-content: center;
-    padding: 20px 30px;
+    padding: .9rem;
     background-color: var(--white);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-left: .5rem;
+    margin-right: .5rem;
+}
+
+.header-container {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 300;
 }
 
 .container {
@@ -73,7 +81,7 @@ h2, h3, h4 {
 #viz1, #viz2, #viz3, #viz4, 
 #viz5, #viz6, #viz7, #viz8,
 #viz9, #viz10, #viz11, #viz12,
-#viz13, #viz14, #viz15 {
+#viz13, #viz14, #viz15, #viz16, #viz17 {
     flex: 0 1 400px;
     width: 400px;
     margin-top: auto;

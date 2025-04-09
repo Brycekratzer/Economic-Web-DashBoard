@@ -16,46 +16,74 @@
 </head>
 <body>
 
-    <!-- Header with navigation -->
+    <!-- Header -->
     <header>
-        <h1>Economic Dashboard</h1>
+        <div class="header-container">
+            <h1>Economic Dashboard</h1>
+            Last Updated: <div class="date-label">....</div>
+        </div>
     </header>
     
     <!--  Dashboard section -->
     <main class="container">        
         <section class="dashboard-panel">
 
-            <h4>Model Projections</h4>
+            <h4>Model Prediction's</h4>
 
             <!-- D3.js visualization -->
             <div class="graph-container">
+
+                <!-- Present Prediction -->
                 <div id="viz12"> 
                     <div class="viz-header">
-                        S&P 500 One Month Projection
+                        S&P 500 One Month Prediction
                     </div>
                     <div class="viz-desription">
                         Built using the PatchTST architecture, this model analyzes multiple metrics that affect stock market performance.
                         Given the nature of our model, the first week of our prediction is more accurate than near the end of 
-                        our projection.
+                        our Prediction.
                     </div>
                 </div>
                 <div id="viz13"> 
                     <div class="viz-header">
-                        Dow Jones One Month Projection
+                        Dow Jones One Month Prediction
                     </div>
                     <div class="viz-desription">
                         Built using the PatchTST architecture, this model analyzes multiple metrics that affect stock market performance. 
-                        The projections provided are intended for educational purposes, speculation, and curiosity only, and SHOULD NOT be used as investing advice. 
-                        This projection is for the Dow Jones over the next couple of months
+                        The Prediction's provided are intended for educational purposes, speculation, and curiosity only, and SHOULD NOT be used as investing advice. 
+                        This Prediction is for the Dow Jones over the next month
                     </div>
                 </div>
+
+                <!-- Previous Week Predictions -->
+                <div id="viz16"> 
+                    <div class="viz-header">
+                        S&P 500 Previous Prediction (Prior Week)
+                    </div>
+                    <div class="viz-desription">
+                        In order to have reference on how the model preforms, along with how the models Prediction changed, a past prediction from a week ago is displayed here.
+                        The red line represents the actual values, and the dotted line is the Prediction.
+                    </div>
+                </div>
+
+                <div id="viz17"> 
+                    <div class="viz-header">
+                        Dow Jones Previous Prediction (Prior Week)
+                    </div>
+                    <div class="viz-desription">
+                        In order to have reference on how the model preforms, a past prediction from a week ago is displayed here.
+                        The red line represents the actual values, and the dotted line is the Prediction.
+                    </div>
+                </div>
+
+                <!-- Previous Month Predictions -->
                 <div id="viz14"> 
                     <div class="viz-header">
                         S&P 500 Previous Prediction
                     </div>
                     <div class="viz-desription">
-                        In order to have reference on how the model preforms, a past prediction from the model from 40 days ago is displayed here.
-                        The red line represents the actual values, and the dotted line is the projection.
+                        In order to have reference on how the model preforms, a past prediction from 40 days ago is displayed here.
+                        The red line represents the actual values, and the dotted line is the Prediction.
                     </div>
                 </div>
                 <div id="viz15"> 
@@ -63,8 +91,8 @@
                         Dow Jones Previous Prediction
                     </div>
                     <div class="viz-desription">
-                        In order to have reference on how the model preforms, a past prediction from the model from 40 days ago is displayed here.
-                        The red line represents the actual values, and the dotted line is the projection.
+                        In order to have reference on how the model preforms, a past prediction from 40 days ago is displayed here.
+                        The red line represents the actual values, and the dotted line is the Prediction.
                     </div>
                 </div>
             </div>
@@ -213,5 +241,6 @@
 
     </footer>
     <script src="./static/display.js"></script>
+    <script src="./static/static.js"></script>
 </body>
 </html>

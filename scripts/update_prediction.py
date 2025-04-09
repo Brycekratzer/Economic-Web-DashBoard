@@ -54,6 +54,8 @@ PATCH_STRD = 5
 PRED_LEN = 3 # Three Day Prediction
 # For past predictions
 PRIOR_DAYS = 40
+# For past week
+PRIOR_WEEK = 6
 
 ft_config = PatchTSTConfig(
     num_input_channels = NUM_INPUT,
@@ -78,8 +80,10 @@ pred_and_original_data = pd.read_csv('./data/model_data/Post_Norm_Model_Data.csv
 # Filter out data to only contain features needed and Date for merging
 pred_and_original_data = pred_and_original_data[['Date']+features_to_pred]
 pred_and_original_data_50_prior = pred_and_original_data[['Date']+features_to_pred]
+pred_and_original_data_week_prior = pred_and_original_data[['Date']+features_to_pred]
 
 pred_and_original_data_50_prior = pred_and_original_data_50_prior[0:len(pred_and_original_data_50_prior) - PRIOR_DAYS]
+pred_and_original_data_week_prior = pred_and_original_data_week_prior[0:len(pred_and_original_data_week_prior) - PRIOR_WEEK]
 
 # How many predictions we will recursively make
 NUM_ITER = 7
@@ -92,46 +96,55 @@ for day in range(NUM_ITER):
     # Drop the date for prediction
     df_copy = pred_and_original_data.drop(['Date'], axis=1)
     df_copy_50 = pred_and_original_data_50_prior.drop(['Date'], axis=1)
+    df_copy_week = pred_and_original_data_week_prior.drop(['Date'], axis=1)
     
     with torch.no_grad():
         # Grab the last instance of CONTEXT_LEN days
         features = df_copy.iloc[-CONTEXT_LEN:].values
         features_50 = df_copy_50.iloc[-CONTEXT_LEN:].values
+        features_week = df_copy_week.iloc[-CONTEXT_LEN:].values
         
         # Convert to proper format for model
         features = torch.tensor(features, dtype=torch.float32).unsqueeze(0)
         features_50 = torch.tensor(features_50, dtype=torch.float32).unsqueeze(0)
+        features_week = torch.tensor(features_week, dtype=torch.float32).unsqueeze(0)
 
         predictions = ft_model(past_values=features)
         predictions_50 = ft_model(past_values=features_50)
+        predictions_week = ft_model(past_values=features_week)
         
         forcast = predictions.prediction_outputs
         forcast_50 = predictions_50.prediction_outputs
+        forcast_week = predictions_week.prediction_outputs
     
     # Convert predictions back to prior format
     predictions = forcast.squeeze(0).numpy()
     predictions_50 = forcast_50.squeeze(0).numpy()
+    predictions_week = forcast_week.squeeze(0).numpy()
     
     pred_np = predictions
     pred_np_50 = predictions_50
+    pred_np_week = predictions_week
     
     # Get the last dates in the datasets
     last_date = pd.to_datetime(pred_and_original_data['Date']).iloc[-1]
     last_date_50 = pd.to_datetime(pred_and_original_data_50_prior['Date']).iloc[-1]
-
-    # Get the next business day after the last date
-    next_date = next_business_day(last_date)
-    next_date_50 = next_business_day(last_date_50)
+    last_date_week = pd.to_datetime(pred_and_original_data_week_prior['Date']).iloc[-1]
 
     if last_date.weekday() >= 5:
         last_date = last_date + timedelta(days=1)
-        if last_date.weekday >= 5:
+        if last_date.weekday() >= 5:
             last_date = last_date + timedelta(days=1)
             
     if last_date_50.weekday() >= 5:
         last_date_50 = last_date_50 + timedelta(days=1)
-        if last_date_50.weekday >= 5:
+        if last_date_50.weekday() >= 5:
             last_date_50 = last_date_50 + timedelta(days=1)
+            
+    if last_date_week.weekday() >= 5:
+        last_date_week = last_date_week + timedelta(days=1)
+        if last_date_week.weekday >= 5:
+            last_date_week = last_date_week + timedelta(days=1)
 
     # Create date range for predictions
     future_dates = pd.date_range(
@@ -140,9 +153,14 @@ for day in range(NUM_ITER):
         freq='B'
     )
     
-    
     future_dates_50 = pd.date_range(
         start=last_date_50 + timedelta(days=1),
+        periods=PRED_LEN,
+        freq='B'
+    )
+    
+    future_dates_week = pd.date_range(
+        start=last_date_week + timedelta(days=1),
         periods=PRED_LEN,
         freq='B'
     )
@@ -153,6 +171,9 @@ for day in range(NUM_ITER):
     
     pred_df_50 = pd.DataFrame(pred_np_50, columns=features_to_pred)
     pred_df_50['Date'] = future_dates_50
+    
+    pred_df_week = pd.DataFrame(pred_np_week, columns=features_to_pred)
+    pred_df_week['Date'] = future_dates_week
 
     # Add predictions to dataset
     pred_and_original_data = pd.concat([pred_and_original_data, pred_df], ignore_index=True)
@@ -161,15 +182,22 @@ for day in range(NUM_ITER):
     pred_and_original_data_50_prior = pd.concat([pred_and_original_data_50_prior, pred_df_50], ignore_index=True)
     pred_and_original_data_50_prior['Date'] = pd.to_datetime(pred_and_original_data_50_prior['Date'])
     
+    pred_and_original_data_week_prior = pd.concat([pred_and_original_data_week_prior, pred_df_week], ignore_index=True)
+    pred_and_original_data_week_prior['Date'] = pd.to_datetime(pred_and_original_data_week_prior['Date'])
+    
 # Load in unnormalized data and format to match features we are predicting
 original_df = pd.read_csv('./data/model_data/Pre_Norm_Model_Data.csv')
 original_df_50 = original_df[0:len(original_df) - PRIOR_DAYS]
+original_df_week = original_df[0:len(original_df) - PRIOR_WEEK]
 
 original_df = original_df[['Date'] + features_to_pred]
 original_df['Date'] = pd.to_datetime(original_df['Date'])
 
 original_df_50 = original_df_50[['Date'] + features_to_pred]
 original_df_50['Date'] = pd.to_datetime(original_df_50['Date'])
+
+original_df_week = original_df_week[['Date'] + features_to_pred]
+original_df_week['Date'] = pd.to_datetime(original_df_week['Date'])
 
 # Get columns to normalize that doesn't include date.
 columns_to_unnormalize = pred_and_original_data.drop(['Date'], axis=1).columns
@@ -182,6 +210,8 @@ filtered_start = int(len(unnorm_df) * .95)
 unnorm_df[filtered_start:len(unnorm_df) - NUM_ITER*PRED_LEN].to_csv('./data/model_projections/pre_prediction_stocks.csv')
 unnorm_df[len(unnorm_df) - NUM_ITER*PRED_LEN:len(unnorm_df)].to_csv('./data/model_projections/prediction_stocks.csv')
 
+
+# Predictions from 50 days prior
 columns_to_unnormalize_50 = pred_and_original_data_50_prior.drop(['Date'], axis=1).columns
 unnorm_df_50 = norm_data_st(pred_and_original_data_50_prior, original_df_50, columns_to_unnormalize,WINDOW_SIZE)    
 
@@ -191,3 +221,14 @@ unnorm_df_50[filtered_start_50:len(unnorm_df_50) - NUM_ITER*PRED_LEN].to_csv('./
 original_df[len(original_df_50):len(original_df_50) + (NUM_ITER * PRED_LEN)].to_csv('./data/model_projections/actual_stock_50_prior.csv')
 
 unnorm_df_50[len(unnorm_df_50) - NUM_ITER*PRED_LEN:len(unnorm_df_50)].to_csv('./data/model_projections/prediction_stocks_50_prior.csv')
+
+# Predictions from a week days prior
+columns_to_unnormalize_week = pred_and_original_data_week_prior.drop(['Date'], axis=1).columns
+unnorm_df_week = norm_data_st(pred_and_original_data_week_prior, original_df_week, columns_to_unnormalize,WINDOW_SIZE)    
+
+filtered_start_week = int(len(original_df_week) * .985)
+    
+unnorm_df_week[filtered_start_week:len(original_df_week)].to_csv('./data/model_projections/pre_prediction_stocks_week_prior.csv')
+original_df[len(original_df_week):len(original_df_week) + PRIOR_WEEK].to_csv('./data/model_projections/actual_stock_week_prior.csv')
+
+unnorm_df_week[len(unnorm_df_week) - NUM_ITER*PRED_LEN:(len(unnorm_df_week) - NUM_ITER*PRED_LEN) + PRIOR_WEEK + 5].to_csv('./data/model_projections/prediction_stocks_week_prior.csv')

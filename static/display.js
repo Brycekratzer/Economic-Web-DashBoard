@@ -157,6 +157,22 @@ const svgDJprediction50 = d3.select("#viz15")
     .append("g") 
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Graph for S&P Prediction (prior week)
+const svgSPpredictionWeekAgo = d3.select("#viz16")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Graph for Dow Jones Prediction (prior week)
+const svgDJpredictionWeekAgo= d3.select("#viz17")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom )
+    .append("g") 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 /**
  * The tooltip div that appears when hovering over data points
  */
@@ -638,7 +654,7 @@ d3.csv("./data/monetary_policy/construction_jobs_data.csv")
   .then(function(data) {
     createViz(svgConstRate, data, {
         key: "JTS2300JOL",
-        yAxisLabel: "Unemployment Rate",
+        yAxisLabel: "Construction Jobss",
     });
 }).catch(function(error) {
     // Handle any errors
@@ -700,6 +716,34 @@ Promise.all([
     const predictionDataDJ = data[1]; 
     const predictionActualDJ = data[2];
     createCombinedStockViz(svgDJprediction50, actualDataDJ, predictionDataDJ, predictionActualDJ, {
+        key: "^DJI Close",
+        yAxisLabel: "Dow Jones Value"
+    });
+
+
+}).catch(function(error) {
+    console.log("Error loading S&P prediction data:", error);
+});
+
+// Display stock data
+Promise.all([
+    d3.csv("./data/model_projections/pre_prediction_stocks_week_prior.csv"),
+    d3.csv("./data/model_projections/prediction_stocks_week_prior.csv"),
+    d3.csv("./data/model_projections/actual_stock_week_prior.csv")
+]).then(function(data) {
+    const actualDataSP = data[0];
+    const predictionDataSP = data[1];
+    const predictionActualSP = data[2];
+
+    createCombinedStockViz(svgSPpredictionWeekAgo, actualDataSP, predictionDataSP, predictionActualSP, {
+        key: "^GSPC Close",
+        yAxisLabel: "S&P 500 Value"
+    });
+
+    const actualDataDJ = data[0];
+    const predictionDataDJ = data[1]; 
+    const predictionActualDJ = data[2];
+    createCombinedStockViz(svgDJpredictionWeekAgo, actualDataDJ, predictionDataDJ, predictionActualDJ, {
         key: "^DJI Close",
         yAxisLabel: "Dow Jones Value"
     });
